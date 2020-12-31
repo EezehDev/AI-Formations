@@ -10,6 +10,10 @@ Formations are often used in RTS games, to move a group of units without making 
 
 **Extra** - Unit movement using pre-defined formations
 
+## Demo
+
+*Video/Gif*
+
 ## Project info
 
 **Controls**
@@ -24,3 +28,19 @@ There is also functionality to add and remove units from the group, which will u
 
 Using the UI you can choose to move the units in formation or stack.
 Grouped units will always move together with their corresponding group (moving 1 unit will move all units in the same group), while trying to navigate in group around the environment including the obstacles in place.
+
+## Functionality
+
+**Grouping**
+
+**Formations**
+
+**Steering**
+
+**Pathfinding**
+
+**Extra**
+
+## Sources
+
+Name - *URL*
