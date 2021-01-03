@@ -2,7 +2,7 @@
 
 AI Steering behaviors, while keeping a certain formation. Also includes some variations and group functionality.
 
-The project is implemented using Unreal Engine (v4.25.4).
+The project is implemented using Unity (version 2020.1.13f1).
 
 ## Goal
 
