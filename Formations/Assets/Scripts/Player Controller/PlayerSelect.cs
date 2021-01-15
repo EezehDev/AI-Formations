@@ -21,7 +21,7 @@ public class PlayerSelect : MonoBehaviour
 
                 // Get mouse location
                 Vector3 mouseLocation = Input.mousePosition;
-                mouseLocation.z = 10;
+                mouseLocation.z = Camera.main.transform.position.y;
 
                 // Convert mouse location to world space
                 Vector3 worldLocation = Camera.main.ScreenToWorldPoint(mouseLocation);
@@ -34,7 +34,7 @@ public class PlayerSelect : MonoBehaviour
             {
                 // Get mouse location
                 Vector3 mouseLocation = Input.mousePosition;
-                mouseLocation.z = 10;
+                mouseLocation.z = Camera.main.transform.position.y;
 
                 // Convert mouse location to world space
                 Vector3 worldLocation = Camera.main.ScreenToWorldPoint(mouseLocation);
