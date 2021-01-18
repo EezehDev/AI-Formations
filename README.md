@@ -37,7 +37,7 @@ Grouped units will always move together with their corresponding group (moving a
 
 Initially, I wanted to use Unreal Engine due to the already existing top-down template and engine architecture. Due to limited time and no previous knowledge of C++ in the engine, I ended up switching to Unity. 
 
-Unity has decent physics simulation and a component called nav mesh agent, which should suffice for the goal of this project. Since there was no decent template available, I chose to start with a simple 3D empty project. To have some graphical representation, I added Universal Render Pipeline together with some assets from the Unity Asset Store **(see sources)**.
+Unity has decent physics simulation and a component called nav mesh agent, which should suffice for the goal of this project. Since there was no decent template available, I chose to start with a simple 3D empty project. To have some graphical representation, I added Universal Render Pipeline together with some assets from the Unity Asset Store **(see [sources](https://github.com/MrEezeh/AI-Formations#sources))**.
 
 **RTS Selection**
 
