@@ -28,7 +28,10 @@ Grouped units will always move together with their corresponding group (moving 1
 ## Implementation
 
 **Choosing the engine / framework**
-Initially, I wanted to use Unreal Engine due to the already existing top-down template and engine architecture. Due to limited time and no previous knowledge of C++ in the engine, I ended up switching to Unity. Unity has decent physics simulation and should suffice for the goal of this project. Since there was no decent template available, I chose to start with a simple 3D empty project. To have some graphical representation, I added Universal Render Pipeline together with some assets from the Unity Asset Store (see sources).
+
+Initially, I wanted to use Unreal Engine due to the already existing top-down template and engine architecture. Due to limited time and no previous knowledge of C++ in the engine, I ended up switching to Unity. 
+
+Unity has decent physics simulation and should suffice for the goal of this project. Since there was no decent template available, I chose to start with a simple 3D empty project. To have some graphical representation, I added Universal Render Pipeline together with some assets from the Unity Asset Store (see sources).
 
 ## Functionality
 
@@ -48,4 +51,12 @@ Initially, I wanted to use Unreal Engine due to the already existing top-down te
 
 ## Sources
 
-Name - *URL*
+**Game Engine**
+
+[Unity](https://unity.com/)
+
+[Unity Asset Store](https://assetstore.unity.com/)
+
+**Assets**
+
+[Basic Motions FREE Pack - Kevin Iglesias](https://assetstore.unity.com/packages/3d/animations/basic-motions-free-pack-154271)
