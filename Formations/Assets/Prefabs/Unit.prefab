@@ -1745,6 +1745,7 @@ MonoBehaviour:
   m_Mesh: {fileID: 3009904002734940629}
   m_StandardMaterial: {fileID: 2100000, guid: 791131fe328cf1443ba7682fdeb6b53f, type: 2}
   m_SelectedMaterial: {fileID: 2100000, guid: 0d41999e6ac741f47bd7b1d6ec715244, type: 2}
+  m_Animator: {fileID: 3009904002739150613}
 --- !u!1 &3009904002748542319
 GameObject:
   m_ObjectHideFlags: 0

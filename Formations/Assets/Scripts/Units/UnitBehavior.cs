@@ -7,6 +7,7 @@ public class UnitBehavior : MonoBehaviour
     [SerializeField] private SkinnedMeshRenderer m_Mesh = null;
     [SerializeField] private Material m_StandardMaterial = null;
     [SerializeField] private Material m_SelectedMaterial = null;
+    [SerializeField] private Animator m_Animator = null;
 
     // Rigidbody
     const int m_Weight = 70;
@@ -45,8 +46,11 @@ public class UnitBehavior : MonoBehaviour
 
     private void FixedUpdate()
     {
-        SeekTarget(); // seek towards target
-        AutoOrient(); // rotate unit
+        SeekTarget(); // Seek towards target
+        AutoOrient(); // Rotate unit
+
+        // Set the animator velocity
+        m_Animator.SetFloat("Velocity", m_Rigidbody.velocity.magnitude);
     }
 
     // Auto orient based on rigidbody velocity
