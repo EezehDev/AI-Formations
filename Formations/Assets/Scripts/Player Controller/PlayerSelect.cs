@@ -7,7 +7,8 @@ public class PlayerSelect : MonoBehaviour
 
     private SelectionBox m_SelectionBox = null;
     private bool m_Selecting = false;
-    public List<GameObject> m_SelectedUnits = new List<GameObject>();
+    private bool m_Adding = false;
+    public List<KeyValuePair<int, UnitBehavior>> m_SelectedUnits = new List<KeyValuePair<int, UnitBehavior>>();
 
     void Update()
     {
@@ -15,6 +16,12 @@ public class PlayerSelect : MonoBehaviour
         {
             if (m_SelectionBox == null)
             {
+                // Check if we are adding to our current selection
+                if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+                {
+                    m_Adding = true;
+                }
+
                 // If no selectionbox exists, create one
                 GameObject go = Instantiate(m_SelectionBoxPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
                 m_SelectionBox = go.GetComponent<SelectionBox>();
@@ -32,6 +39,12 @@ public class PlayerSelect : MonoBehaviour
             }
             else
             {
+                // Check if player hasn't released control
+                if (!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl))
+                {
+                    m_Adding = false;
+                }
+
                 // Get mouse location
                 Vector3 mouseLocation = Input.mousePosition;
                 mouseLocation.z = Camera.main.transform.position.y;
@@ -49,20 +62,87 @@ public class PlayerSelect : MonoBehaviour
         {
             if (m_Selecting)
             {
+                // If not adding to our current selection, clear it
+                if (!m_Adding)
+                {
+                    ClearSelection();
+                }
+
+                // Select units, and stop selecting
                 SelectUnits();
                 m_Selecting = false;
+                m_Adding = false;
             }
+        }
+
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            ClearSelection();
         }
     }
 
+    // Select units inside selection box
     private void SelectUnits()
     {
-        if (m_SelectionBox != null)
-        {
-            m_SelectedUnits = m_SelectionBox.GetOverlappingObjects();
+        // Only execute if we have a box reference
+        if (m_SelectionBox == null)
+            return;
 
-            Destroy(m_SelectionBox.gameObject);
-            m_SelectionBox = null;
+        // Get all overlapping objects
+        List<GameObject> overlappingObjects = m_SelectionBox.GetOverlappingObjects();
+
+        // Loop over all objects
+        foreach (GameObject go in overlappingObjects)
+        {
+            int goID = go.GetInstanceID();
+
+            // If we are adding to our selection
+            if (m_Adding)
+            {
+                // Check for duplicates in our list
+                bool duplicate = false;
+                foreach (KeyValuePair<int, UnitBehavior> selectedUnit in m_SelectedUnits)
+                {
+                    if (selectedUnit.Key == goID)
+                    {
+                        duplicate = true;
+                        break;
+                    }
+                }
+
+                // Don't add this unit, when the ID is already present
+                if (duplicate)
+                    continue;
+            }
+
+            // Check if they have behavior script, and add units with their ID to our list
+            UnitBehavior goUnit = go.GetComponent<UnitBehavior>();
+            if (goUnit != null)
+            {
+                m_SelectedUnits.Add(new KeyValuePair<int, UnitBehavior>(goID, goUnit));
+                goUnit.Select();
+            }
         }
+
+        // Destroy the box and reset reference
+        Destroy(m_SelectionBox.gameObject);
+        m_SelectionBox = null;
+    }
+
+    // Clear our selected units
+    private void ClearSelection()
+    {
+        // Only execute if we have units
+        if (m_SelectedUnits.Count == 0)
+            return;
+
+        // Loop over all units
+        foreach (KeyValuePair<int, UnitBehavior> unit in m_SelectedUnits)
+        {
+            unit.Value.Deselect();
+        }
+
+        // Clear the list of units
+        m_SelectedUnits.Clear();
     }
 }
