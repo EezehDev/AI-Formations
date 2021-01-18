@@ -10,10 +10,6 @@ Formations are often used in RTS games, to move a group of units without making 
 
 **Extra** - Unit movement using pre-defined formations
 
-## Demo
-
-*Video/Gif*
-
 ## Project info
 
 **Controls**
@@ -29,6 +25,11 @@ There is also functionality to add and remove units from the group, which will u
 Using the UI you can choose to move the units in formation or stack.
 Grouped units will always move together with their corresponding group (moving 1 unit will move all units in the same group), while trying to navigate in group around the environment including the obstacles in place.
 
+## Implementation
+
+**Choosing the engine / framework**
+Initially, I wanted to use Unreal Engine due to the already existing top-down template and engine architecture. Due to limited time and no previous knowledge of C++ in the engine, I ended up switching to Unity. Unity has decent physics simulation and should suffice for the goal of this project. Since there was no decent template available, I chose to start with a simple 3D empty project. To have some graphical representation, I added Universal Render Pipeline together with some assets from the Unity Asset Store (see sources).
+
 ## Functionality
 
 **Grouping**
@@ -40,6 +41,10 @@ Grouped units will always move together with their corresponding group (moving 1
 **Pathfinding**
 
 **Extra**
+
+## Result
+
+*Video/Gif*
 
 ## Sources
 

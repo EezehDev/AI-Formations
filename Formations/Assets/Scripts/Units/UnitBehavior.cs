@@ -16,6 +16,7 @@ public class UnitBehavior : MonoBehaviour
     private Vector3 m_Target;
     private bool m_OnTarget = true;
     public float maxLinearVelocity { get; private set; } = 3f; // length of velocity vector
+    private Quaternion m_LastRotation = Quaternion.identity; // last known rotation
 
     private void Start()
     {
@@ -51,16 +52,20 @@ public class UnitBehavior : MonoBehaviour
     // Auto orient based on rigidbody velocity
     private void AutoOrient()
     {
-        // Only execute when moving
+        // Only update orientation when moving
         if (m_OnTarget)
+        {
+            transform.rotation = m_LastRotation; // avoids any spinning when being pushed
             return;
+        }
 
         // Get rotation in rad based on velocity
         float rotation = Mathf.Atan2(m_Rigidbody.velocity.z, m_Rigidbody.velocity.x);
         rotation = 90 - (rotation * Mathf.Rad2Deg); // subtract from 90, to get correct rotation and convert to degrees
 
         // Look in the current direction
-        transform.rotation = Quaternion.Euler(0, rotation, 0);
+        m_LastRotation = Quaternion.Euler(0, rotation, 0);
+        transform.rotation = m_LastRotation;
     }
 
     // Set a new target
