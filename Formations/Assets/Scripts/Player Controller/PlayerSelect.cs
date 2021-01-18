@@ -6,8 +6,8 @@ public class PlayerSelect : MonoBehaviour
     // Data
     private PlayerData m_Data = null;
 
+    // Selection
     [SerializeField] private GameObject m_SelectionBoxPrefab = null;
-
     private SelectionBox m_SelectionBox = null;
     private bool m_Selecting = false;
     private bool m_Adding = false;
@@ -19,8 +19,10 @@ public class PlayerSelect : MonoBehaviour
 
     private void Update()
     {
+        // Get left mouse button input
         if (Input.GetMouseButton(0))
         {
+            // See if we have a selection box present
             if (m_SelectionBox == null)
             {
                 // Check if we are adding to our current selection
@@ -63,10 +65,12 @@ public class PlayerSelect : MonoBehaviour
                 m_SelectionBox.SetEndLocation(worldLocation);
             }
 
+            // Set selecting to true (holding down left click)
             m_Selecting = true;
         }
         else
         {
+            // If we just release our left click
             if (m_Selecting)
             {
                 // If not adding to our current selection, clear it
@@ -82,7 +86,8 @@ public class PlayerSelect : MonoBehaviour
             }
         }
 
-        if (Input.GetKey(KeyCode.Escape))
+        // Upon pressing escape
+        if (Input.GetKeyDown(KeyCode.Escape))
         {
             ClearSelection();
         }
