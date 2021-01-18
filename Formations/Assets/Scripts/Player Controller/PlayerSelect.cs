@@ -3,14 +3,21 @@ using UnityEngine;
 
 public class PlayerSelect : MonoBehaviour
 {
+    // Data
+    private PlayerData m_Data = null;
+
     [SerializeField] private GameObject m_SelectionBoxPrefab = null;
 
     private SelectionBox m_SelectionBox = null;
     private bool m_Selecting = false;
     private bool m_Adding = false;
-    public List<KeyValuePair<int, UnitBehavior>> m_SelectedUnits = new List<KeyValuePair<int, UnitBehavior>>();
 
-    void Update()
+    private void Start()
+    {
+        m_Data = GetComponent<PlayerData>();
+    }
+
+    private void Update()
     {
         if (Input.GetMouseButton(0))
         {
@@ -101,7 +108,7 @@ public class PlayerSelect : MonoBehaviour
             {
                 // Check for duplicates in our list
                 bool duplicate = false;
-                foreach (KeyValuePair<int, UnitBehavior> selectedUnit in m_SelectedUnits)
+                foreach (KeyValuePair<int, UnitBehavior> selectedUnit in m_Data.selectedUnits)
                 {
                     if (selectedUnit.Key == goID)
                     {
@@ -119,7 +126,7 @@ public class PlayerSelect : MonoBehaviour
             UnitBehavior goUnit = go.GetComponent<UnitBehavior>();
             if (goUnit != null)
             {
-                m_SelectedUnits.Add(new KeyValuePair<int, UnitBehavior>(goID, goUnit));
+                m_Data.selectedUnits.Add(new KeyValuePair<int, UnitBehavior>(goID, goUnit));
                 goUnit.Select();
             }
         }
@@ -133,16 +140,16 @@ public class PlayerSelect : MonoBehaviour
     private void ClearSelection()
     {
         // Only execute if we have units
-        if (m_SelectedUnits.Count == 0)
+        if (m_Data.selectedUnits.Count == 0)
             return;
 
         // Loop over all units
-        foreach (KeyValuePair<int, UnitBehavior> unit in m_SelectedUnits)
+        foreach (KeyValuePair<int, UnitBehavior> unit in m_Data.selectedUnits)
         {
             unit.Value.Deselect();
         }
 
         // Clear the list of units
-        m_SelectedUnits.Clear();
+        m_Data.selectedUnits.Clear();
     }
 }
