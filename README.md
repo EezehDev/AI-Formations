@@ -1,8 +1,8 @@
-# AI-Formations (WIP, defining the scope of project)
+# Coordinated Group Movement (AI Formations)
 
-AI Steering behaviors, while keeping a certain formation. Also includes some variations and group functionality.
+Research on coordinated movement of AI in groups, and certain formations while navigating through a world. Based on RTS games and various other researches, includes RTS style selections and input. 
 
-The project is implemented using Unity (version 2020.1.13f1).
+The project is made using Unity (version 2020.1.13f1).
 
 ## Goal
 
@@ -11,6 +11,12 @@ Formations are often used in RTS games, to move a group of units in a pattern fi
 To embrace the RTS style, I will also try to simulate some of the input and controls available in these games. A few of these controls being: rectangular (multi-) selection, movement commands, grouping/ungrouping units and more. This is not part of the actual research, but felt necessary to test out the project functionality.
 
 ## Project info
+
+**Instalation Guide**
+1. Download code in [ZIP](https://github.com/MrEezeh/AI-Formations/archive/main.zip)
+2. Download [Unity](https://unity.com/)
+3. Add the "Project" folder in Unity Hub
+4. Install the corresponding Unity version (2020.1)
 
 **Controls**
 - "WASD", freelook camera
@@ -67,10 +73,6 @@ This doesn't look too bad for now, but there is definitely more work to do to pr
 
 ## Sources
 
-**Game Engine**
-
-[Unity](https://unity.com/)
-
 **Assets**
 
 [Basic Motions FREE Pack - Kevin Iglesias](https://assetstore.unity.com/packages/3d/animations/basic-motions-free-pack-154271)
@@ -78,3 +80,9 @@ This doesn't look too bad for now, but there is definitely more work to do to pr
 **Research**
 
 [Coordinated Movement - Jeremiah Warm](http://www.jeremiahwarm.com/coordinated-movement.php)
+
+[Implementing Coordinated Movement - Dave Pottinger](https://www.gamasutra.com/view/feature/3314/coordinated_unit_movement.php?print=1
+
+[Group Movement in a RTS game - Marc Latorre](https://marclafr.github.io/Research-Group-Movement-RTS-/)
+
+[Sandra Alvarez](https://sandruski.github.io/RTS-Group-Movement/)
