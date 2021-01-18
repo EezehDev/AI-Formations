@@ -39,11 +39,15 @@ Usually Top-Down RTS games give you the option to click and drag to select multi
 
 I also added some small additional features: holding down "CTRL" to add more units to your current select, and pressing "ESC" to clear your selection. To visualise the selected units, I changed the material color upon selection.
 
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/rts-selection.gif" width="500" />
+
 **Navigation**
 
 When it comes to navigating in unity, it's fairly straight forward. All I had to do is: attach a Nav Mesh Agent component to my units, configure some variables and build the Navigation Mesh. Once that was done, I can tell the component to move my unit around.
 
 This doesn't look too bad for now, but there is definitely more work to do to properly navigate the units in formation.
+
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/navigation.gif" width="500" />
 
 ## Functionality
 
