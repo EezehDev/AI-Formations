@@ -55,8 +55,6 @@ Unity has decent physics simulation and should suffice for the goal of this proj
 
 [Unity](https://unity.com/)
 
-[Unity Asset Store](https://assetstore.unity.com/)
-
 **Assets**
 
 [Basic Motions FREE Pack - Kevin Iglesias](https://assetstore.unity.com/packages/3d/animations/basic-motions-free-pack-154271)
