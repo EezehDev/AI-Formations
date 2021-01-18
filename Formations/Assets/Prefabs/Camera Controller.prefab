@@ -48,8 +48,8 @@ MonoBehaviour:
   m_MovementSpeed: 10
   m_MinimumX: -20
   m_MaximumX: 20
-  m_MinimumZ: -21
-  m_MaximumZ: 5
+  m_MinimumZ: -20
+  m_MaximumZ: 20
   m_ScrollSpeed: 1
   m_StartLocation: {x: 0, y: 10, z: 0}
   m_MinDistance: 5

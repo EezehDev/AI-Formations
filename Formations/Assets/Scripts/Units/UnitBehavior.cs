@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using UnityEngine.AI;
 
-[RequireComponent(typeof(Rigidbody))]
+//[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class UnitBehavior : MonoBehaviour
 {
     // Visuals
@@ -10,24 +12,21 @@ public class UnitBehavior : MonoBehaviour
     [SerializeField] private Animator m_Animator = null;
 
     // Rigidbody
-    const int m_Weight = 70;
     private Rigidbody m_Rigidbody = null;
 
-    // Movement
-    private Vector3 m_Target;
-    private bool m_OnTarget = true;
-    public float maxLinearVelocity { get; private set; } = 3f; // length of velocity vector
-    private Quaternion m_LastRotation = Quaternion.identity; // last known rotation
+    // NavMeshAgent
+    private NavMeshAgent m_NavMeshAgent = null;
 
     private void Start()
     {
         // Change material instance
         m_Mesh.material = m_StandardMaterial;
 
-        // Set rigidbody reference, and adjust weight + restraints
+        // Set Rigidbody reference
         m_Rigidbody = GetComponent<Rigidbody>();
-        m_Rigidbody.mass = m_Weight;
-        m_Rigidbody.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+
+        // Set NavMeshAgent reference
+        m_NavMeshAgent = GetComponent<NavMeshAgent>();
     }
 
     // Code to execute when selecting unit
@@ -46,62 +45,13 @@ public class UnitBehavior : MonoBehaviour
 
     private void FixedUpdate()
     {
-        SeekTarget(); // Seek towards target
-        AutoOrient(); // Rotate unit
-
         // Set the animator velocity
-        m_Animator.SetFloat("Velocity", m_Rigidbody.velocity.magnitude);
-    }
-
-    // Auto orient based on rigidbody velocity
-    private void AutoOrient()
-    {
-        // Only update orientation when moving
-        if (m_OnTarget)
-        {
-            transform.rotation = m_LastRotation; // avoids any spinning when being pushed
-            return;
-        }
-
-        // Get rotation in rad based on velocity
-        float rotation = Mathf.Atan2(m_Rigidbody.velocity.z, m_Rigidbody.velocity.x);
-        rotation = 90 - (rotation * Mathf.Rad2Deg); // subtract from 90, to get correct rotation and convert to degrees
-
-        // Look in the current direction
-        m_LastRotation = Quaternion.Euler(0, rotation, 0);
-        transform.rotation = m_LastRotation;
+        m_Animator.SetFloat("Velocity", m_NavMeshAgent.velocity.magnitude);
     }
 
     // Set a new target
     public void SetTarget(Vector3 target)
     {
-        // Set new target and on target false
-        m_Target = target;
-        m_OnTarget = false;
-    }
-
-    // Seek towards current target
-    private void SeekTarget()
-    {
-        // Calculate direction
-        Vector3 direction = m_Target - transform.position;
-        float length = direction.magnitude;
-
-        // Only execute if not yet on target
-        if (m_OnTarget)
-            return;
-
-        // If not almost on target, set velocity
-        if (length > 0.1f)
-        {
-            // Normalize direction and set velocity
-            direction.Normalize();
-            m_Rigidbody.velocity = direction * maxLinearVelocity;
-        }
-        else
-        {
-            // If close enough, we are on target
-            m_OnTarget = true;
-        }
+        m_NavMeshAgent.SetDestination(target);
     }
 }

@@ -1655,9 +1655,10 @@ GameObject:
   m_Component:
   - component: {fileID: 3009904002748772493}
   - component: {fileID: 3009904002739150613}
+  - component: {fileID: 4742399553912548995}
   - component: {fileID: 3862758471265482022}
-  - component: {fileID: 7109098150801713653}
   - component: {fileID: 4788364246138695911}
+  - component: {fileID: 627619082290596299}
   m_Layer: 0
   m_Name: Unit
   m_TagString: Untagged
@@ -1700,6 +1701,28 @@ Animator:
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorControllerStateOnDisable: 0
+--- !u!195 &4742399553912548995
+NavMeshAgent:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3009904002748542317}
+  m_Enabled: 1
+  m_AgentTypeID: 0
+  m_Radius: 0.2
+  m_Speed: 3.5
+  m_Acceleration: 100
+  avoidancePriority: 50
+  m_AngularSpeed: 360
+  m_StoppingDistance: 0
+  m_AutoTraverseOffMeshLink: 0
+  m_AutoBraking: 1
+  m_AutoRepath: 1
+  m_Height: 0.925
+  m_BaseOffset: 0
+  m_WalkableMask: 4294967295
+  m_ObstacleAvoidanceType: 4
 --- !u!54 &3862758471265482022
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -1714,22 +1737,8 @@ Rigidbody:
   m_UseGravity: 1
   m_IsKinematic: 0
   m_Interpolate: 0
-  m_Constraints: 0
+  m_Constraints: 80
   m_CollisionDetection: 0
---- !u!136 &7109098150801713653
-CapsuleCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3009904002748542317}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_Enabled: 1
-  m_Radius: 0.2
-  m_Height: 0.925
-  m_Direction: 1
-  m_Center: {x: 0.000000059164737, y: 0.463, z: -0.004444178}
 --- !u!114 &4788364246138695911
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1746,6 +1755,20 @@ MonoBehaviour:
   m_StandardMaterial: {fileID: 2100000, guid: 791131fe328cf1443ba7682fdeb6b53f, type: 2}
   m_SelectedMaterial: {fileID: 2100000, guid: 0d41999e6ac741f47bd7b1d6ec715244, type: 2}
   m_Animator: {fileID: 3009904002739150613}
+--- !u!136 &627619082290596299
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3009904002748542317}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  m_Radius: 0.2
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0.45, z: 0}
 --- !u!1 &3009904002748542319
 GameObject:
   m_ObjectHideFlags: 0
