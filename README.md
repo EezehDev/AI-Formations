@@ -76,4 +76,5 @@ This doesn't look too bad for now, but there is definitely more work to do to pr
 [Basic Motions FREE Pack - Kevin Iglesias](https://assetstore.unity.com/packages/3d/animations/basic-motions-free-pack-154271)
 
 **Research**
+
 [Coordinated Movement - Jeremiah Warm](http://www.jeremiahwarm.com/coordinated-movement.php)
