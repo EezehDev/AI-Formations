@@ -7,8 +7,10 @@ public class UnitBehavior : MonoBehaviour
 {
     // Visuals
     [SerializeField] private SkinnedMeshRenderer m_Mesh = null;
+    [SerializeField] private GameObject m_SelectionCircle = null;
     [SerializeField] private Material m_StandardMaterial = null;
-    [SerializeField] private Material m_SelectedMaterial = null;
+
+    // Animation
     [SerializeField] private Animator m_Animator = null;
 
     // Rigidbody
@@ -32,15 +34,15 @@ public class UnitBehavior : MonoBehaviour
     // Code to execute when selecting unit
     public void Select()
     {
-        // Update material
-        m_Mesh.material = m_SelectedMaterial;
+        // Display the selection circle
+        m_SelectionCircle.SetActive(true);
     }
 
     // Code to execute when deselecting unit
     public void Deselect()
     {
-        // Update material
-        m_Mesh.material = m_StandardMaterial;
+        // Hide the selection circle
+        m_SelectionCircle.SetActive(false);
     }
 
     private void FixedUpdate()
