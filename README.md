@@ -13,12 +13,12 @@ To embrace the RTS style, I will also try to simulate some of the input and cont
 ## Project info
 
 **Instalation Guide**
-1. Download code in [ZIP](https://github.com/MrEezeh/AI-Formations/archive/main.zip)
-2. Download [Unity](https://unity.com/)
-3. Add the "Project" folder in Unity Hub
-4. Install the corresponding Unity version (2020.1)
+1. Download [Unity](https://unity.com/)
+2. Install the correct Unity version (2020.1)
+3. Download code in [ZIP](https://github.com/MrEezeh/AI-Formations/archive/main.zip)
+4. Add the "Project" folder in Unity Hub
 
-**Controls**
+**Controls (in-game)**
 - "WASD", freelook camera
 - "LMB", selecting unit (hold for rectangle select)
 - "RMB", move unit(s)
