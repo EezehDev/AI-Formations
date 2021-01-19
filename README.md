@@ -16,7 +16,9 @@ To embrace the RTS style, I will also try to simulate some of the input and cont
 1. Download [Unity](https://unity.com/)
 2. Install the correct Unity version (2020.1)
 3. Download code in [ZIP](https://github.com/MrEezeh/AI-Formations/archive/main.zip)
-4. Add the "Project" folder in Unity Hub
+4. Unpack "AI-Formations-main.zip"
+5. Add the "Project" folder in Unity Hub
+6. All done, open the project
 
 **Controls (in-game)**
 - "WASD", freelook camera
@@ -24,6 +26,8 @@ To embrace the RTS style, I will also try to simulate some of the input and cont
 - "RMB", move unit(s)
 - "G", group units
 - "Shift-G", ungroup units
+
+**Game info**
 
 You start with a few units grouped up, you can choose to either ungroup the units or create new groups.
 There is also functionality to add and remove units from the group, which will update the current formation.
