@@ -2,7 +2,7 @@
 
 Research on coordinated movement of AI in groups, and certain formations while navigating through a world. Based on RTS games and various other researches, includes RTS style selections and input. 
 
-The project is made using Unity (version 2020.1.13f1).
+The project is made using Unity (version 2020.1.13f1) and C#.
 
 ## Goal
 
@@ -55,7 +55,7 @@ I also added some small additional features: holding down "CTRL" to add more uni
 
 When it comes to navigating in unity, it's fairly straight forward. All I had to do is: attach a Nav Mesh Agent component to my units, configure some variables and build the Navigation Mesh. Once that was done, I can tell the component to move my unit around.
 
-This doesn't look too bad for now, but there is definitely more work to do to properly navigate the units in formation.
+The result isn't too bad for now, but there is definitely more work to do to properly navigate the units in formation.
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/navigation.gif" width="500" />
 
