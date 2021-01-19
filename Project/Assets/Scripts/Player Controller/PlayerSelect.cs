@@ -12,6 +12,9 @@ public class PlayerSelect : MonoBehaviour
     private bool m_Selecting = false;
     private bool m_Adding = false;
 
+    // Grouping
+    [SerializeField] private GameObject m_GroupLeaderPrefab = null;
+
     private void Start()
     {
         m_Data = GetComponent<PlayerData>();
@@ -91,6 +94,12 @@ public class PlayerSelect : MonoBehaviour
         {
             ClearSelection();
         }
+
+        // Upon pressing G
+        if (Input.GetKeyDown(KeyCode.G))
+        {
+            GroupSelection();
+        }
     }
 
     // Select units inside selection box
@@ -131,8 +140,43 @@ public class PlayerSelect : MonoBehaviour
             UnitBehavior goUnit = go.GetComponent<UnitBehavior>();
             if (goUnit != null)
             {
-                m_Data.selectedUnits.Add(new KeyValuePair<int, UnitBehavior>(goID, goUnit));
-                goUnit.Select();
+                // Get the unit's leader
+                GroupLeader leader = goUnit.GetLeader();
+
+                // If unit doesn't have a leader
+                if (leader == null)
+                {
+                    // Add unit
+                    m_Data.selectedUnits.Add(new KeyValuePair<int, UnitBehavior>(goID, goUnit));
+                    goUnit.Select();
+                }
+                else
+                {
+                    // Check if we already have this leader selected
+                    bool duplicate = false;
+                    int leaderID = leader.GetInstanceID();
+                    foreach (KeyValuePair<int, GroupLeader> selectedLeader in m_Data.selectedLeaders)
+                    {
+                        if (selectedLeader.Key == leaderID)
+                        {
+                            duplicate = true;
+                            break;
+                        }
+                    }
+
+                    // If already selected, continue
+                    if (duplicate)
+                        continue;
+
+                    // Loop over all units in the leader's group and select them
+                    foreach (KeyValuePair<int, UnitBehavior> groupUnit in leader.units)
+                    {
+                        groupUnit.Value.Select();
+                    }
+
+                    // Add leader to list
+                    m_Data.selectedLeaders.Add(new KeyValuePair<int, GroupLeader>(leaderID, leader));
+                }
             }
         }
 
@@ -145,7 +189,7 @@ public class PlayerSelect : MonoBehaviour
     private void ClearSelection()
     {
         // Only execute if we have units
-        if (m_Data.selectedUnits.Count == 0)
+        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
             return;
 
         // Loop over all units
@@ -156,5 +200,64 @@ public class PlayerSelect : MonoBehaviour
 
         // Clear the list of units
         m_Data.selectedUnits.Clear();
+
+        // Loop over all leaders
+        foreach (KeyValuePair<int, GroupLeader> leader in m_Data.selectedLeaders)
+        {
+            // Loop over all units in group
+            foreach (KeyValuePair<int, UnitBehavior> unit in leader.Value.units)
+            {
+                unit.Value.Deselect();
+            }
+        }
+
+        // Clear the list of leaders
+        m_Data.selectedLeaders.Clear();
+    }
+
+    // Group selected units
+    private void GroupSelection()
+    {
+        // Only execute if we have units
+        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
+            return;
+
+        // Loop over all selected leaders
+        foreach (KeyValuePair<int, GroupLeader> selectedLeader in m_Data.selectedLeaders)
+        {
+            // Loop over all units in group
+            foreach (KeyValuePair<int, UnitBehavior> unit in selectedLeader.Value.units)
+            {
+                // Add them to our current selected units
+                m_Data.selectedUnits.Add(new KeyValuePair<int, UnitBehavior>(unit.Key, unit.Value));
+            }
+
+            // Destroy all selected leaders
+            Destroy(selectedLeader.Value.gameObject);
+        }
+
+        // Clear the list of leaders
+        m_Data.selectedLeaders.Clear();
+
+        // Get the average location of selected units
+        Vector3 averageLocation = new Vector3();
+        // Loop over all units
+        foreach (KeyValuePair<int, UnitBehavior> unit in m_Data.selectedUnits)
+        {
+            averageLocation += unit.Value.transform.position;
+        }
+        averageLocation /= m_Data.selectedUnits.Count;
+
+        // Instantiate a leader in middle
+        GameObject go = Instantiate(m_GroupLeaderPrefab, averageLocation, Quaternion.identity);
+        GroupLeader leader = go.GetComponent<GroupLeader>();
+
+        // Loop over all units
+        foreach (KeyValuePair<int, UnitBehavior> unit in m_Data.selectedUnits)
+        {
+            // Add to leader list of units and set unit leader
+            leader.units.Add(unit);
+            unit.Value.SetLeader(leader);
+        }
     }
 }

@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using UnityEngine.AI;
 
-//[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(NavMeshAgent))]
 public class UnitBehavior : MonoBehaviour
 {
@@ -18,6 +18,9 @@ public class UnitBehavior : MonoBehaviour
 
     // NavMeshAgent
     private NavMeshAgent m_NavMeshAgent = null;
+
+    // Group
+    private GroupLeader m_Leader = null;
 
     private void Start()
     {
@@ -55,5 +58,15 @@ public class UnitBehavior : MonoBehaviour
     public void SetTarget(Vector3 target)
     {
         m_NavMeshAgent.SetDestination(target);
+    }
+
+    public void SetLeader(GroupLeader leader)
+    {
+        m_Leader = leader;
+    }
+
+    public GroupLeader GetLeader()
+    {
+        return m_Leader;
     }
 }

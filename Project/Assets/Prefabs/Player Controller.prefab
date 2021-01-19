@@ -71,3 +71,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_SelectionBoxPrefab: {fileID: 5979282454386288247, guid: dfc1ba77c05238d4182d502573a2fa34, type: 3}
+  m_GroupLeaderPrefab: {fileID: 3009904002748542317, guid: b87355286fc29d448accc19ee730d1d1, type: 3}
