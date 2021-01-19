@@ -2,17 +2,17 @@
 
 Research on coordinated movement of AI in groups, and certain formations while navigating through a world. Based on RTS games and various other researches, includes RTS style selections and input. 
 
-The project is made using Unity (version 2020.1.13f1) and C#.
+The project is made using Unity (version 2020.1.13f1) and C# (version 7.3).
 
 ## Goal
 
 Formations are often used in RTS games, to move a group of units in a pattern fit for the given situation. The main focus of this project is to attempt to recreate this behavior, in my own way and figuring out what the best approach to this would be. Since there are over a hundred different ways to go over formations, I will start with keeping the current formation when selecting a group of units and later look into dealing with obstacles while keeping the formation intact, pre-defined patterns, different unit speeds within the same formation and more. 
 
-To embrace the RTS style, I will also try to simulate some of the input and controls available in these games. A few of these controls being: rectangular (multi-) selection, movement commands, grouping/ungrouping units and more. This is not part of the actual research, but felt necessary to test out the project functionality.
+To embrace the RTS style, I will also try to simulate some of the input and controls available in these games. A few of these controls being: rectangular (multi-) selection, movement commands, grouping/ungrouping units and more. This is not part of the actual research, but feels like a perfect fit.
 
 ## Project info
 
-**Instalation Guide**
+**Installation Guide**
 1. Download [Unity](https://unity.com/)
 2. Install the correct Unity version (2020.1)
 3. Download code in [ZIP](https://github.com/MrEezeh/AI-Formations/archive/main.zip)
@@ -40,7 +40,7 @@ Grouped units will always move together with their corresponding group (moving a
 
 The first few parts are extra and not part of the research, so there will be no code. Feel free to download the project or check the files inside to see how these features work.
 
-**Choosing the engine / framework**
+**Game Engine**
 
 Initially, I wanted to use Unreal Engine due to the already existing top-down template and engine architecture. Due to limited time and no previous knowledge of C++ in the engine, I ended up switching to Unity. 
 
