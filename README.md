@@ -47,7 +47,7 @@ Unity has decent physics simulation and a component called nav mesh agent, which
 
 Usually Top-Down RTS games give you the option to click and drag to select multiple units at once, so this is what I tried to recreate. The easiest way I could think of, was to make a plane with a collision attached that would extend upwards. This way I could scale this plane when holding down and dragging the mouse around, and upon releasing get all the overlapping objects.
 
-I also added some small additional features: holding down "CTRL" to add more units to your current select, and pressing "ESC" to clear your selection. To visualise the selected units, I changed the material color upon selection.
+I also added some small additional features: holding down "CTRL" to add more units to your current select, and pressing "ESC" to clear your selection. To visualise the selected units, I added a green circle underneath them.
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/rts-selection.gif" width="500" />
 
