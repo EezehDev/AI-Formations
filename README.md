@@ -89,4 +89,4 @@ This doesn't look too bad for now, but there is definitely more work to do to pr
 
 [Group Movement in a RTS game - Marc Latorre](https://marclafr.github.io/Research-Group-Movement-RTS-/)
 
-[Sandra Alvarez](https://sandruski.github.io/RTS-Group-Movement/)
+[RTS Group Movement - Sandra Alvarez](https://sandruski.github.io/RTS-Group-Movement/)
