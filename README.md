@@ -85,7 +85,7 @@ This doesn't look too bad for now, but there is definitely more work to do to pr
 
 [Coordinated Movement - Jeremiah Warm](http://www.jeremiahwarm.com/coordinated-movement.php)
 
-[Implementing Coordinated Movement - Dave Pottinger](https://www.gamasutra.com/view/feature/3314/coordinated_unit_movement.php?print=1
+[Implementing Coordinated Movement - Dave Pottinger](https://www.gamasutra.com/view/feature/3314/coordinated_unit_movement.php?print=1)
 
 [Group Movement in a RTS game - Marc Latorre](https://marclafr.github.io/Research-Group-Movement-RTS-/)
 
