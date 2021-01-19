@@ -25,68 +25,11 @@ public class PlayerSelect : MonoBehaviour
         // Get left mouse button input
         if (Input.GetMouseButton(0))
         {
-            // See if we have a selection box present
-            if (m_SelectionBox == null)
-            {
-                // Check if we are adding to our current selection
-                if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
-                {
-                    m_Adding = true;
-                }
-
-                // If no selectionbox exists, create one
-                GameObject go = Instantiate(m_SelectionBoxPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
-                m_SelectionBox = go.GetComponent<SelectionBox>();
-
-                // Get mouse location
-                Vector3 mouseLocation = Input.mousePosition;
-                mouseLocation.z = Camera.main.transform.position.y;
-
-                // Convert mouse location to world space
-                Vector3 worldLocation = Camera.main.ScreenToWorldPoint(mouseLocation);
-
-                // Set selectionbox boundaries to mouse position
-                m_SelectionBox.SetStartLocation(worldLocation);
-                m_SelectionBox.SetEndLocation(worldLocation);
-            }
-            else
-            {
-                // Check if player hasn't released control
-                if (!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl))
-                {
-                    m_Adding = false;
-                }
-
-                // Get mouse location
-                Vector3 mouseLocation = Input.mousePosition;
-                mouseLocation.z = Camera.main.transform.position.y;
-
-                // Convert mouse location to world space
-                Vector3 worldLocation = Camera.main.ScreenToWorldPoint(mouseLocation);
-
-                // Update end location, which will update selectionbox boundaries
-                m_SelectionBox.SetEndLocation(worldLocation);
-            }
-
-            // Set selecting to true (holding down left click)
-            m_Selecting = true;
+            ClickDragSelect();
         }
         else
         {
-            // If we just release our left click
-            if (m_Selecting)
-            {
-                // If not adding to our current selection, clear it
-                if (!m_Adding)
-                {
-                    ClearSelection();
-                }
-
-                // Select units, and stop selecting
-                SelectUnits();
-                m_Selecting = false;
-                m_Adding = false;
-            }
+            StopSelecting();
         }
 
         // Upon pressing escape
@@ -98,8 +41,86 @@ public class PlayerSelect : MonoBehaviour
         // Upon pressing G
         if (Input.GetKeyDown(KeyCode.G))
         {
-            GroupSelection();
+            // Check if we are holding down any of the shift keys
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
+            {
+                // Ungroup current selection
+                UngroupSelection();
+            }
+            else
+            {
+                // Group current selection
+                GroupSelection();
+            }
         }
+    }
+
+    // Handle mouse click and drag select
+    private void ClickDragSelect()
+    {
+        // See if we have a selection box present
+        if (m_SelectionBox == null)
+        {
+            // Check if we are adding to our current selection
+            if (Input.GetKey(KeyCode.LeftControl) || Input.GetKey(KeyCode.RightControl))
+            {
+                m_Adding = true;
+            }
+
+            // If no selectionbox exists, create one
+            GameObject go = Instantiate(m_SelectionBoxPrefab, new Vector3(0f, 0f, 0f), Quaternion.identity);
+            m_SelectionBox = go.GetComponent<SelectionBox>();
+
+            // Get mouse location
+            Vector3 mouseLocation = Input.mousePosition;
+            mouseLocation.z = Camera.main.transform.position.y;
+
+            // Convert mouse location to world space
+            Vector3 worldLocation = Camera.main.ScreenToWorldPoint(mouseLocation);
+
+            // Set selectionbox boundaries to mouse position
+            m_SelectionBox.SetStartLocation(worldLocation);
+            m_SelectionBox.SetEndLocation(worldLocation);
+        }
+        else
+        {
+            // Check if player hasn't released control
+            if (!Input.GetKey(KeyCode.LeftControl) && !Input.GetKey(KeyCode.RightControl))
+            {
+                m_Adding = false;
+            }
+
+            // Get mouse location
+            Vector3 mouseLocation = Input.mousePosition;
+            mouseLocation.z = Camera.main.transform.position.y;
+
+            // Convert mouse location to world space
+            Vector3 worldLocation = Camera.main.ScreenToWorldPoint(mouseLocation);
+
+            // Update end location, which will update selectionbox boundaries
+            m_SelectionBox.SetEndLocation(worldLocation);
+        }
+
+        // Set selecting to true (holding down left click)
+        m_Selecting = true;
+    }
+
+    private void StopSelecting()
+    {
+        // Only execute when selecting
+        if (!m_Selecting)
+            return;
+
+        // If not adding to our current selection, clear it
+        if (!m_Adding)
+        {
+            ClearSelection();
+        }
+
+        // Select units, and stop selecting
+        SelectUnits();
+        m_Selecting = false;
+        m_Adding = false;
     }
 
     // Select units inside selection box
@@ -115,68 +136,43 @@ public class PlayerSelect : MonoBehaviour
         // Loop over all objects
         foreach (GameObject go in overlappingObjects)
         {
-            int goID = go.GetInstanceID();
+            // Check if gameobject they have behavior script
+            UnitBehavior unit = go.GetComponent<UnitBehavior>();
+            if (unit == null)
+                continue;
 
             // If we are adding to our selection
             if (m_Adding)
             {
-                // Check for duplicates in our list
-                bool duplicate = false;
-                foreach (KeyValuePair<int, UnitBehavior> selectedUnit in m_Data.selectedUnits)
-                {
-                    if (selectedUnit.Key == goID)
-                    {
-                        duplicate = true;
-                        break;
-                    }
-                }
-
-                // Don't add this unit, when the ID is already present
-                if (duplicate)
+                // If duplicate, don't add this unit
+                if (m_Data.selectedUnits.Contains(unit))
                     continue;
             }
 
-            // Check if they have behavior script, and add units with their ID to our list
-            UnitBehavior goUnit = go.GetComponent<UnitBehavior>();
-            if (goUnit != null)
+            // Get the unit's leader
+            GroupLeader leader = unit.GetLeader();
+
+            // If unit doesn't have a leader
+            if (leader == null)
             {
-                // Get the unit's leader
-                GroupLeader leader = goUnit.GetLeader();
+                // Add unit
+                m_Data.selectedUnits.Add(unit);
+                unit.Select();
+            }
+            else
+            {
+                // If duplicate, don't add this leader
+                if (m_Data.selectedLeaders.Contains(leader))
+                    continue;
 
-                // If unit doesn't have a leader
-                if (leader == null)
+                // Loop over all units in the leader's group and select them
+                foreach (UnitBehavior groupUnit in leader.units)
                 {
-                    // Add unit
-                    m_Data.selectedUnits.Add(new KeyValuePair<int, UnitBehavior>(goID, goUnit));
-                    goUnit.Select();
+                    groupUnit.Select();
                 }
-                else
-                {
-                    // Check if we already have this leader selected
-                    bool duplicate = false;
-                    int leaderID = leader.GetInstanceID();
-                    foreach (KeyValuePair<int, GroupLeader> selectedLeader in m_Data.selectedLeaders)
-                    {
-                        if (selectedLeader.Key == leaderID)
-                        {
-                            duplicate = true;
-                            break;
-                        }
-                    }
 
-                    // If already selected, continue
-                    if (duplicate)
-                        continue;
-
-                    // Loop over all units in the leader's group and select them
-                    foreach (KeyValuePair<int, UnitBehavior> groupUnit in leader.units)
-                    {
-                        groupUnit.Value.Select();
-                    }
-
-                    // Add leader to list
-                    m_Data.selectedLeaders.Add(new KeyValuePair<int, GroupLeader>(leaderID, leader));
-                }
+                // Add leader to list
+                m_Data.selectedLeaders.Add(leader);
             }
         }
 
@@ -193,21 +189,21 @@ public class PlayerSelect : MonoBehaviour
             return;
 
         // Loop over all units
-        foreach (KeyValuePair<int, UnitBehavior> unit in m_Data.selectedUnits)
+        foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
-            unit.Value.Deselect();
+            unit.Deselect();
         }
 
         // Clear the list of units
         m_Data.selectedUnits.Clear();
 
         // Loop over all leaders
-        foreach (KeyValuePair<int, GroupLeader> leader in m_Data.selectedLeaders)
+        foreach (GroupLeader leader in m_Data.selectedLeaders)
         {
             // Loop over all units in group
-            foreach (KeyValuePair<int, UnitBehavior> unit in leader.Value.units)
+            foreach (UnitBehavior unit in leader.units)
             {
-                unit.Value.Deselect();
+                unit.Deselect();
             }
         }
 
@@ -218,33 +214,19 @@ public class PlayerSelect : MonoBehaviour
     // Group selected units
     private void GroupSelection()
     {
-        // Only execute if we have units
+        // Only execute if we have selection
         if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
             return;
 
-        // Loop over all selected leaders
-        foreach (KeyValuePair<int, GroupLeader> selectedLeader in m_Data.selectedLeaders)
-        {
-            // Loop over all units in group
-            foreach (KeyValuePair<int, UnitBehavior> unit in selectedLeader.Value.units)
-            {
-                // Add them to our current selected units
-                m_Data.selectedUnits.Add(new KeyValuePair<int, UnitBehavior>(unit.Key, unit.Value));
-            }
-
-            // Destroy all selected leaders
-            Destroy(selectedLeader.Value.gameObject);
-        }
-
-        // Clear the list of leaders
-        m_Data.selectedLeaders.Clear();
+        // Ungroup selection before regrouping
+        UngroupSelection();
 
         // Get the average location of selected units
         Vector3 averageLocation = new Vector3();
         // Loop over all units
-        foreach (KeyValuePair<int, UnitBehavior> unit in m_Data.selectedUnits)
+        foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
-            averageLocation += unit.Value.transform.position;
+            averageLocation += unit.transform.position;
         }
         averageLocation /= m_Data.selectedUnits.Count;
 
@@ -253,11 +235,42 @@ public class PlayerSelect : MonoBehaviour
         GroupLeader leader = go.GetComponent<GroupLeader>();
 
         // Loop over all units
-        foreach (KeyValuePair<int, UnitBehavior> unit in m_Data.selectedUnits)
+        foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
             // Add to leader list of units and set unit leader
             leader.units.Add(unit);
-            unit.Value.SetLeader(leader);
+            unit.SetLeader(leader);
         }
+
+        // Clear list of selected units
+        m_Data.selectedUnits.Clear();
+
+        // Add leader to selected leaders
+        m_Data.selectedLeaders.Add(leader);
+    }
+
+    // Ungroup selected units
+    private void UngroupSelection()
+    {
+        // Only execute if we have selection
+        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
+            return;
+
+        // Loop over all selected leaders
+        foreach (GroupLeader selectedLeader in m_Data.selectedLeaders)
+        {
+            // Loop over all units in group
+            foreach (UnitBehavior unit in selectedLeader.units)
+            {
+                // Add them to our current selected units
+                m_Data.selectedUnits.Add(unit);
+            }
+
+            // Destroy selected leader
+            Destroy(selectedLeader.gameObject);
+        }
+
+        // Clear the list of leaders
+        m_Data.selectedLeaders.Clear();
     }
 }

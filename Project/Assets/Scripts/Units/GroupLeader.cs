@@ -6,7 +6,7 @@ using UnityEngine.AI;
 public class GroupLeader : MonoBehaviour
 {
     // Unit list
-    public List<KeyValuePair<int, UnitBehavior>> units = new List<KeyValuePair<int, UnitBehavior>>();
+    public List<UnitBehavior> units = new List<UnitBehavior>();
 
     // NavMeshAgent
     private NavMeshAgent m_NavMeshAgent = null;

@@ -33,14 +33,14 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    // Tell all selected units to move towards target
+    // Move all selected units to target
     private void MoveSelection(Vector3 target)
     {
         // Loop over all agents
-        foreach (KeyValuePair<int, UnitBehavior> unit in m_Data.selectedUnits)
+        foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
             // Set a new target
-            unit.Value.SetTarget(target);
+            unit.SetTarget(target);
         }
     }
 }
