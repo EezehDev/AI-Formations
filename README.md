@@ -6,9 +6,9 @@ The project is made using Unity (version 2020.1.13f1) and C# (version 7.3).
 
 ## Goal
 
-Formations are often used in RTS games, to move a group of units in a pattern fit for the given situation. The main focus of this project is to attempt to recreate this behavior, in my own way and figuring out what the best approach to this would be. Since there are over a hundred different ways to go over formations, I will start with keeping the current formation when selecting a group of units and later look into dealing with obstacles while keeping the formation intact, pre-defined patterns, different unit speeds within the same formation and more. 
+Coordinated group movement are often used in RTS games, to move a group of units in a pattern fit for the given situation. The main focus of this project is to attempt to recreate this behavior, in my own way and figuring out what the best approach to this would be. Since there are over a hundred different ways to go over formations, I will start with keeping the current formation when selecting a group of units and later look into dealing with obstacles while keeping the formation intact, pre-defined patterns, handling different unit sizes/speeds within the same formation and more. 
 
-To embrace the RTS style, I will also try to simulate some of the input and controls available in these games. A few of these controls being: rectangular (multi-) selection, movement commands, grouping/ungrouping units and more. This is not part of the actual research, but feels like a perfect fit.
+To embrace the RTS style, I will also try to simulate some of the input and controls available in these games. A few of these controls being: rectangular (multi-) selection, movement commands, grouping/ungrouping units. This is not part of the actual research, but feels like a perfect fit.
 
 ## Project info
 
@@ -20,7 +20,7 @@ To embrace the RTS style, I will also try to simulate some of the input and cont
 5. Add the "Project" folder in Unity Hub
 6. All done, open the project
 
-**Controls (in-game)**
+**Game Controls**
 - "WASD", freelook camera
 - "LMB", selecting unit (hold for rectangle select)
 - "CTRL", add to your current selection
@@ -28,17 +28,7 @@ To embrace the RTS style, I will also try to simulate some of the input and cont
 - "G", group units (limit of four groups)
 - "Shift-G", ungroup units
 
-**Game info**
-
-You start with a few units grouped up, you can choose to either ungroup the units or create new groups.
-There is also functionality to add and remove units from the group, which will update the current formation.
-
-Using the UI you can choose to move the units in formation or stack.
-Grouped units will always move together with their corresponding group (moving a unit will move all units in the same group), while trying to navigate in group around the environment including the obstacles in place.
-
-## Implementation
-
-The first few parts are extra and not part of the research, so there will be no code. Feel free to download the project or check the files inside to see how these features work.
+## Implementation process
 
 **Game Engine**
 
