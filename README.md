@@ -23,8 +23,9 @@ To embrace the RTS style, I will also try to simulate some of the input and cont
 **Controls (in-game)**
 - "WASD", freelook camera
 - "LMB", selecting unit (hold for rectangle select)
-- "RMB", move unit(s)
-- "G", group units
+- "CTRL", add to your current selection
+- "RMB", move selection
+- "G", group units (limit of 4 groups)
 - "Shift-G", ungroup units
 
 **Game info**
@@ -45,9 +46,9 @@ Unity has decent physics simulation and a component called nav mesh agent, which
 
 **RTS Selection**
 
-Usually Top-Down RTS games give you the option to click and drag to select multiple units at once, so this is what I tried to recreate. The easiest way I could think of, was to make a plane with a collision attached that would extend upwards. This way I could scale this plane when holding down and dragging the mouse around, and upon releasing get all the overlapping objects.
+Usually Top-Down RTS games give you the option to click and drag to select multiple units at once, so this is what I tried to recreate. The easiest way I could think of, was to make a plane with a collision attached that would extend upwards. This way I could scale this plane when holding down and dragging the mouse around, and upon releasing get all the overlapping objects. Some additional input: holding down "CTRL" will add more units to your current select, and pressing "ESC" to clear your selection.
 
-I also added some small additional features: holding down "CTRL" to add more units to your current select, and pressing "ESC" to clear your selection. To visualise the selected units, I added a green circle underneath them.
+To visualise the selected units, I added a green circle underneath them.
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/rts-selection.gif" width="500" />
 
@@ -61,7 +62,7 @@ The result isn't too bad for now, but there is definitely more work to do to pro
 
 **Grouping**
 
-Now that we have navigation sorted, it's time to group up the units and start working on the main purpose of this project: coordinated movement. To group up the units, I made a simple array to keep track of the index used and set a limit of four groups in total. Then I made some materials to distinguish each of the groups and added the code to group and ungroup selected units. Last thing that seemed logic, was making sure that the full unit group gets selected when selecting on or more group units.
+Now that we have navigation sorted, it's time to group up the units and start working on the main purpose of this project: coordinated movement. To group up the units, I made a simple array to keep track of the index used and set a limit of four groups in total. Then I made some materials to distinguish each of the groups and added the code to group and ungroup selected units. I also made sure selecting one unit from a group selects the full group.
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/grouping.gif" width="500" />
 
