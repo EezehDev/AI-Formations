@@ -37,6 +37,8 @@ Grouped units will always move together with their corresponding group (moving a
 
 ## Implementation
 
+The first few parts are extra and not part of the research, so there will be no code. Feel free to download the project or check the files inside to see how these features work.
+
 **Choosing the engine / framework**
 
 Initially, I wanted to use Unreal Engine due to the already existing top-down template and engine architecture. Due to limited time and no previous knowledge of C++ in the engine, I ended up switching to Unity. 
@@ -61,7 +63,7 @@ The result isn't too bad for now, but there is definitely more work to do to pro
 
 **Grouping**
 
-Now that we have navigation sorted, it's time to group up the units and start working on the main purpose of this project: coordinated movement. To group up the units, I made a simple array to keep track of the index used and set a limit of four groups in total. Then I made some materials to distinguish each of the groups and added the code to group and ungroup selected units. Last thing that seemed logic, was making sure that the full unit group gets selected when selecting on or more group units.
+One last thing before starting with the real deal, is to add grouping functionality. To group up the units, I made a simple array to keep track of the index used and set a limit of four groups in total. Then I made some materials to distinguish each of the groups and added the code to group and ungroup selected units. Last thing that seemed logic, was making sure that the full unit group gets selected when selecting on or more group units.
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/grouping.gif" width="500" />
 
