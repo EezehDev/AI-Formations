@@ -5,7 +5,8 @@ using UnityEngine.AI;
 [RequireComponent(typeof(NavMeshAgent))]
 public class GroupLeader : MonoBehaviour
 {
-    // Unit list
+    // Group info
+    public int groupID = -1;
     public List<UnitBehavior> units = new List<UnitBehavior>();
 
     // NavMeshAgent

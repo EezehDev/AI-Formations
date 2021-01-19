@@ -45,6 +45,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6b7abd7c3f1d4c1439d7e62b018fa4df, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  selectedUnits: []
+  selectedLeaders: []
+  groupCount: 0
+  groupMaterials:
+  - {fileID: 2100000, guid: 0d41999e6ac741f47bd7b1d6ec715244, type: 2}
+  - {fileID: 2100000, guid: e308343b7ee49e142a5bd135c86f2465, type: 2}
+  - {fileID: 2100000, guid: 303d81d0bf1a8fe48a9406dbf7415c4c, type: 2}
+  - {fileID: 2100000, guid: 41ed53dcc6b4aad49a5c3fab4d38fc75, type: 2}
 --- !u!114 &5016735135182511662
 MonoBehaviour:
   m_ObjectHideFlags: 0

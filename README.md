@@ -59,6 +59,12 @@ The result isn't too bad for now, but there is definitely more work to do to pro
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/navigation.gif" width="500" />
 
+**Grouping**
+
+Now that we have navigation sorted, it's time to group up the units and start working on the main purpose of this project: coordinated movement. To group up the units, I made a simple array to keep track of the index used and set a limit of four groups in total. Then I made some materials to distinguish each of the groups and added the code to group and ungroup selected units. Last thing that seemed logic, was making sure that the full unit group gets selected when selecting on or more group units.
+
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/grouping.gif" width="500" />
+
 ## Functionality
 
 **Grouping**

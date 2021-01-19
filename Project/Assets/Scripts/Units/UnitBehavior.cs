@@ -69,4 +69,16 @@ public class UnitBehavior : MonoBehaviour
     {
         return m_Leader;
     }
+
+    public void SetMaterial(Material material = null)
+    {
+        if (material == null)
+        {
+            m_Mesh.material = m_StandardMaterial;
+        }
+        else
+        {
+            m_Mesh.material = material;
+        }
+    }
 }

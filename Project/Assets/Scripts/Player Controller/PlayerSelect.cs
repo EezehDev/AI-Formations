@@ -221,6 +221,22 @@ public class PlayerSelect : MonoBehaviour
         // Ungroup selection before regrouping
         UngroupSelection();
 
+        // Set invalid index
+        int freeIndex = -1;
+        for (int index = 0; index < m_Data.groups.Length; index++)
+        {
+            // Get the first free index
+            if (m_Data.groups[index] == false)
+            {
+                freeIndex = index;
+                break;
+            }
+        }
+
+        // Do not execute if we don't have a free index
+        if (freeIndex == -1)
+            return;
+
         // Get the average location of selected units
         Vector3 averageLocation = new Vector3();
         // Loop over all units
@@ -234,12 +250,17 @@ public class PlayerSelect : MonoBehaviour
         GameObject go = Instantiate(m_GroupLeaderPrefab, averageLocation, Quaternion.identity);
         GroupLeader leader = go.GetComponent<GroupLeader>();
 
+        // Assign group ID
+        leader.groupID = freeIndex;
+        m_Data.groups[freeIndex] = true;
+
         // Loop over all units
         foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
-            // Add to leader list of units and set unit leader
+            // Add to leader list of units, set unit leader and material to group color
             leader.units.Add(unit);
             unit.SetLeader(leader);
+            unit.SetMaterial(m_Data.groupMaterials[freeIndex]);
         }
 
         // Clear list of selected units
@@ -262,11 +283,13 @@ public class PlayerSelect : MonoBehaviour
             // Loop over all units in group
             foreach (UnitBehavior unit in selectedLeader.units)
             {
-                // Add them to our current selected units
+                // Add them to our current selected units, and reset material
                 m_Data.selectedUnits.Add(unit);
+                unit.SetMaterial();
             }
 
-            // Destroy selected leader
+            // Free group ID, destroy leader
+            m_Data.groups[selectedLeader.groupID] = false;
             Destroy(selectedLeader.gameObject);
         }
 
