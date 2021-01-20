@@ -79,9 +79,9 @@ To fix the above issues, we can create a new unit that doesn't have a visual rep
 
 This type is often the case in video games (at least visually), where one unit will be chosen as leader based on different stats (strongest becomes leader). This comes with the advantage of being able to adapt the formation to protect the leader, making a square around it or forming a line behind them. The same principles apply as with a random unit.
 
-As you can see in the image below, the position of our leader has great influence on how the formation moves.
+As you can see in the image below, the position of the leader has great influence on how the group moves.
 
-<img src"https://github.com/MrEezeh/AI-Formations/blob/main/Images/leaders.jpg" alt="leader differences" width="500" />
+![leader differences](https://github.com/MrEezeh/AI-Formations/blob/main/Images/leaders.jpg)
 
 For this research, I will use a virtual unit since it has the most flexibility and is easy to add using prefabs in Unity.
 

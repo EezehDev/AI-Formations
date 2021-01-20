@@ -214,8 +214,10 @@ public class PlayerSelect : MonoBehaviour
     // Group selected units
     private void GroupSelection()
     {
-        // Only execute if we have selection
-        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
+        // Only execute when we have at least 2 groups or units selected
+        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count < 2)
+            return;
+        if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count < 2)
             return;
 
         // Ungroup selection before regrouping
@@ -238,16 +240,33 @@ public class PlayerSelect : MonoBehaviour
             return;
 
         // Get the average location of selected units
-        Vector3 averageLocation = new Vector3();
+        Vector3 minimum = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
+        Vector3 maximum = new Vector3(-Mathf.Infinity, -Mathf.Infinity, -Mathf.Infinity);
         // Loop over all units
         foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
-            averageLocation += unit.transform.position;
-        }
-        averageLocation /= m_Data.selectedUnits.Count;
+            Vector3 unitPosition = unit.transform.position;
 
-        // Instantiate a leader in middle
-        GameObject go = Instantiate(m_GroupLeaderPrefab, averageLocation, Quaternion.identity);
+            if (unitPosition.x < minimum.x)
+                minimum.x = unitPosition.x;
+            if (unitPosition.x > maximum.x)
+                maximum.x = unitPosition.x;
+
+            if (unitPosition.y < minimum.y)
+                minimum.y = unitPosition.y;
+            if (unitPosition.y > maximum.y)
+                maximum.y = unitPosition.y;
+
+            if (unitPosition.z < minimum.z)
+                minimum.z = unitPosition.z;
+            if (unitPosition.z > maximum.z)
+                maximum.z = unitPosition.z;
+        }
+
+        Vector3 middle = (minimum + maximum) / 2f;
+
+        // Instantiate a leader in middle of furthest units
+        GameObject go = Instantiate(m_GroupLeaderPrefab, middle, Quaternion.identity);
         GroupLeader leader = go.GetComponent<GroupLeader>();
 
         // Assign group ID
@@ -273,8 +292,8 @@ public class PlayerSelect : MonoBehaviour
     // Ungroup selected units
     private void UngroupSelection()
     {
-        // Only execute if we have selection
-        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
+        // Only execute if we have leaders
+        if (m_Data.selectedLeaders.Count == 0)
             return;
 
         // Loop over all selected leaders
