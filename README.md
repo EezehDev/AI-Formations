@@ -42,7 +42,7 @@ Usually Top-Down RTS games give you the option to click and drag to select multi
 
 To visualise the selected units, I added a green circle underneath them.
 
-<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/rts-selection.gif" width="500" />
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/rts-selection.gif" alt="rts-selection example" width="500" />
 
 **Navigation**
 
@@ -50,13 +50,13 @@ When it comes to navigating in unity, it's fairly straight forward. All I had to
 
 The result isn't too bad for now, but there is definitely more work to do to properly navigate the units in formation.
 
-<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/navigation.gif" width="500" />
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/navigation.gif" alt="navigation example" width="500" />
 
 **Grouping**
 
 One last thing before starting with the real deal, is to add grouping functionality. To group up the units, I made a simple array to keep track of the index used and set a limit of four groups in total. Then I made some materials to distinguish each of the groups and added the code to group and ungroup selected units. I also made sure selecting one unit from a group selects the full group.
 
-<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/grouping.gif" width="500" />
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/grouping.gif" alt="grouping example" width="500" />
 
 **Group Movement**
 
@@ -69,7 +69,7 @@ Starting with the most important role, the leader is in charge of keeping the gr
 When it comes to selecting a leader, you have a few options:
 1. Random unit
 
-Choosing a random unit, is a simple solution but comes with some disadvantages. Upon creating a group, one unit will take on the role as leader and hold all the necessary data. All units will follow his movement, this is the main issue. A random unit will never be the same when creating a group, and since all group members follow the leader the movement will never be the same between two similar groups. You can change the position of the leader within the group, but that doesn't quite solve the issue since your leader can not break the formation, often making groups where the leader can not be in the center behave different from the rest.
+Choosing a random unit is a simple solution but comes with some disadvantages. Upon creating a group, one unit will take on the role as leader and hold all the necessary data. All units will follow his movement, this is the main issue. A random unit will never be the same when creating a group, and since all group members follow the leader the movement will never be the same between two similar groups. You can change the position of the leader within the group, but that doesn't quite solve the issue since your leader can not break the formation, often making groups where the leader can not be in the center behave different from the rest.
 
 2. Virtual unit
 
@@ -78,6 +78,12 @@ To fix the above issues, we can create a new unit that doesn't have a visual rep
 3. Most important unit
 
 This type is often the case in video games (at least visually), where one unit will be chosen as leader based on different stats (strongest becomes leader). This comes with the advantage of being able to adapt the formation to protect the leader, making a square around it or forming a line behind them. The same principles apply as with a random unit.
+
+As you can see in the image below, the position of our leader has great influence on how the formation moves.
+
+<img src"https://github.com/MrEezeh/AI-Formations/blob/main/Images/leaders.jpg" alt="leader differences" width="500" />
+
+For this research, I will use a virtual unit since it has the most flexibility and is easy to add using prefabs in Unity.
 
 ## Functionality
 
