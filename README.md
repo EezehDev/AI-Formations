@@ -102,18 +102,13 @@ As you can see in the image below, the position of the leader has great influenc
 
 For this research, I will use a virtual unit since it has the most flexibility and is easy to add using prefabs in Unity.
 
-Time to create the leader, for this I created a simple prefab based on the actual unit and changed the script to hold some data that we can later use to access the units and ID of the group, which is used for the material color. For now our AddUnit method doesn't do much, but this will help us update formations in the future. Last thing I added in the class is SetTransform which allows us to reposition the leader when needed.
+Time to create the leader, for this I created a simple prefab based on the actual unit and changed the script to hold some data that we can later use to access the units and ID of the group, which is used for the material color. I also added a SetTransform method which allows us to reposition the leader when needed.
 
 ```cs
 public class GroupLeader : MonoBehaviour
 {
     public int groupID = -1;
-    public List<UnitBehavior> units { get; private set; } = new List<UnitBehavior>();
-    
-    public void AddUnit(UnitBehavior unit)
-    {
-        units.Add(unit);
-    }
+    public List<UnitBehavior> units = new List<UnitBehavior>();
     
     public void SetTransform(Vector3 location, Quaternion rotation)
     {
@@ -187,6 +182,7 @@ I think calculating the middle of the group makes more sense, since it will make
         {
             leader = m_Data.selectedLeaders[0];
             leader.SetTransform(middle, Quaternion.identity);
+            leader.units.Clear();
         }
 ```
 
@@ -195,10 +191,14 @@ Then all that is left to do, is assign all the units to the current leader. In c
 ```cs
         foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
-            leader.AddUnit(unit);
+            leader.units.Add(unit);
             unit.SetLeader(leader);
         }
 ```
+
+- **The Formation**
+
+Every group also has a formation, usually formations are strategic positions to gain an advantage in a fight due to a stronger offensive or defensive position. This means that the core of a formation needs to remain intact whenever possible. Formations also require some data, such as: rows, columns, units per row/column, location of each unit, etc. To start off easy we can add this formation data to our leader, and set all the locations relative to the leader's position.                    
 
 ## Functionality
 
