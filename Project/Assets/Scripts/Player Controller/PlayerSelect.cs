@@ -220,19 +220,30 @@ public class PlayerSelect : MonoBehaviour
         if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count < 2)
             return;
 
-        // Ungroup selection before regrouping
-        UngroupSelection();
+        bool newLeader = false;
+        if (m_Data.selectedLeaders.Count == 0 || m_Data.selectedLeaders.Count >= 2)
+            newLeader = true;
 
         // Set invalid index
         int freeIndex = -1;
-        for (int index = 0; index < m_Data.groups.Length; index++)
+
+        UngroupSelection(newLeader);
+
+        if (newLeader)
         {
-            // Get the first free index
-            if (m_Data.groups[index] == false)
+            for (int index = 0; index < m_Data.groups.Length; index++)
             {
-                freeIndex = index;
-                break;
+                // Get the first free index
+                if (m_Data.groups[index] == false)
+                {
+                    freeIndex = index;
+                    break;
+                }
             }
+        }
+        else
+        {
+            freeIndex = m_Data.selectedLeaders[0].groupID;
         }
 
         // Do not execute if we don't have a free index
@@ -266,19 +277,28 @@ public class PlayerSelect : MonoBehaviour
 
         Vector3 middle = (minimum + maximum) / 2f;
 
-        // Instantiate a leader in middle of furthest units
-        GameObject go = Instantiate(m_GroupLeaderPrefab, middle, Quaternion.identity);
-        GroupLeader leader = go.GetComponent<GroupLeader>();
+        GroupLeader leader = null;
+        if (newLeader)
+        {
+            // Instantiate a leader in middle of furthest units
+            GameObject go = Instantiate(m_GroupLeaderPrefab, middle, Quaternion.identity);
+            leader = go.GetComponent<GroupLeader>();
 
-        // Assign group ID
-        leader.groupID = freeIndex;
-        m_Data.groups[freeIndex] = true;
+            // Assign group ID
+            leader.groupID = freeIndex;
+            m_Data.groups[freeIndex] = true;
+        }
+        else
+        {
+            leader = m_Data.selectedLeaders[0];
+            leader.SetTransform(middle, Quaternion.identity);
+        }
 
         // Loop over all units
         foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
             // Add to leader list of units, set unit leader and material to group color
-            leader.units.Add(unit);
+            leader.AddUnit(unit);
             unit.SetLeader(leader);
             unit.SetMaterial(m_Data.groupMaterials[freeIndex]);
         }
@@ -286,12 +306,15 @@ public class PlayerSelect : MonoBehaviour
         // Clear list of selected units
         m_Data.selectedUnits.Clear();
 
-        // Add leader to selected leaders
-        m_Data.selectedLeaders.Add(leader);
+        if (newLeader)
+        {
+            // Add leader to selected leaders
+            m_Data.selectedLeaders.Add(leader);
+        }
     }
 
     // Ungroup selected units
-    private void UngroupSelection()
+    private void UngroupSelection(bool destroyLeader = true)
     {
         // Only execute if we have leaders
         if (m_Data.selectedLeaders.Count == 0)
@@ -308,12 +331,18 @@ public class PlayerSelect : MonoBehaviour
                 unit.SetMaterial();
             }
 
-            // Free group ID, destroy leader
-            m_Data.groups[selectedLeader.groupID] = false;
-            Destroy(selectedLeader.gameObject);
+            if (destroyLeader)
+            {
+                // Free group ID, destroy leader
+                m_Data.groups[selectedLeader.groupID] = false;
+                Destroy(selectedLeader.gameObject);
+            }
         }
 
-        // Clear the list of leaders
-        m_Data.selectedLeaders.Clear();
+        if (destroyLeader)
+        {
+            // Clear the list of leaders
+            m_Data.selectedLeaders.Clear();
+        }
     }
 }
