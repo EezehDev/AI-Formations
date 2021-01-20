@@ -58,6 +58,23 @@ One last thing before starting with the real deal, is to add grouping functional
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/grouping.gif" alt="grouping example" width="500" />
 
+**Player Data**
+
+In my current model, the player keeps track of some data to make sure we can easily group and ungroup units. I store both units and leaders seperate, since the unit list is only made for undividual units. This way I can tell the units to just simply move to a point, while the leaders will command their own units.
+
+Then I just keep track of which groups are currently taken, together with an array of materials used to change unit color.
+
+```cs
+    // Unit list
+    public List<UnitBehavior> selectedUnits = new List<UnitBehavior>();
+    public List<GroupLeader> selectedLeaders = new List<GroupLeader>();
+
+    // Groups
+    const int maxGroups = 4;
+    public bool[] groups = new bool[maxGroups];
+    public Material[] groupMaterials = new Material[maxGroups];
+```
+
 **Group Movement**
 
 Before we can start actually moving one of the groups, it is important to take a look at how this can be done. Let's begin with the most important parts of a group, what essentially makes a group before we can start moving it.
@@ -84,6 +101,79 @@ As you can see in the image below, the position of the leader has great influenc
 ![leader differences](https://github.com/MrEezeh/AI-Formations/blob/main/Images/leaders.jpg)
 
 For this research, I will use a virtual unit since it has the most flexibility and is easy to add using prefabs in Unity.
+
+Time to create the leader, for this I created a simple prefab based on the actual unit and changed the script to hold some public data that we can later use to access the units and ID of the group, which is used for the material color.
+
+```cs
+public class GroupLeader : MonoBehaviour
+{
+    public int groupID = -1;
+    public List<UnitBehavior> units = new List<UnitBehavior>();
+}
+```
+
+To decide the spawn position, I first ungroup all the groups currently selected. This makes sure that we have a free group slot and by writing all the selected units back into a list we can easily loop over them which will be needed later on.
+
+```cs
+        foreach (GroupLeader selectedLeader in m_Data.selectedLeaders)
+        {
+            foreach (UnitBehavior unit in selectedLeader.units)
+            {
+                m_Data.selectedUnits.Add(unit);
+            }
+            
+            m_Data.groups[selectedLeader.groupID] = false;
+            Destroy(selectedLeader.gameObject);
+        }
+```
+
+Once this is done, we can loop over our selected units and calculate a position for the new leader. Here we also have a few options, either we set the leader in the middle of all selected units essentially making sure that all units arrive at roughly the same time, or we can use an average position which makes already close units barely have to move while far away units have to travel towards them.
+
+I think calculating the middle of the group makes more sense, since it will make regrouping look more like an actual group being formed. So this is how I ended up implementing the leader spawning.
+
+```cs
+        Vector3 minimum = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
+        Vector3 maximum = new Vector3(-Mathf.Infinity, -Mathf.Infinity, -Mathf.Infinity);
+        
+        // Loop over all units
+        foreach (UnitBehavior unit in m_Data.selectedUnits)
+        {
+            Vector3 unitPosition = unit.transform.position;
+
+            if (unitPosition.x < minimum.x)
+                minimum.x = unitPosition.x;
+            if (unitPosition.x > maximum.x)
+                maximum.x = unitPosition.x;
+
+            if (unitPosition.y < minimum.y)
+                minimum.y = unitPosition.y;
+            if (unitPosition.y > maximum.y)
+                maximum.y = unitPosition.y;
+
+            if (unitPosition.z < minimum.z)
+                minimum.z = unitPosition.z;
+            if (unitPosition.z > maximum.z)
+                maximum.z = unitPosition.z;
+        }
+
+        Vector3 middle = (minimum + maximum) / 2f;
+
+        // Instantiate a leader in middle of furthest units
+        GameObject go = Instantiate(m_GroupLeaderPrefab, middle, Quaternion.identity);
+        GroupLeader leader = go.GetComponent<GroupLeader>();
+```
+
+Then all that is left to do, is set the group index and assign the units to the leader.
+
+```cs
+        leader.groupID = freeIndex;
+
+        foreach (UnitBehavior unit in m_Data.selectedUnits)
+        {
+            leader.units.Add(unit);
+            unit.SetLeader(leader);
+        }
+```
 
 ## Functionality
 
