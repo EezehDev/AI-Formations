@@ -239,9 +239,10 @@ public class PlayerSelect : MonoBehaviour
         if (freeIndex == -1)
             return;
 
-        // Get the average location of selected units
+        // Set minimum and maximum to opposite values
         Vector3 minimum = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
         Vector3 maximum = new Vector3(-Mathf.Infinity, -Mathf.Infinity, -Mathf.Infinity);
+
         // Loop over all units
         foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
