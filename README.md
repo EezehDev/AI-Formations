@@ -81,7 +81,7 @@ This type is often the case in video games (at least visually), where one unit w
 
 As you can see in the image below, the position of our leader has great influence on how the formation moves.
 
-<img src"https://github.com/MrEezeh/AI-Formations/blob/main/Images/leaders.jpg" alt="leader differences" width="500" />
+![leader differences](https://github.com/MrEezeh/AI-Formations/blob/main/Images/leaders.jpg)
 
 For this research, I will use a virtual unit since it has the most flexibility and is easy to add using prefabs in Unity.
 
