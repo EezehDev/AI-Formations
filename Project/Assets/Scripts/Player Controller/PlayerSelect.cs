@@ -292,19 +292,21 @@ public class PlayerSelect : MonoBehaviour
         {
             leader = m_Data.selectedLeaders[0];
             leader.SetTransform(middle, Quaternion.identity);
+            leader.units.Clear();
         }
 
         // Loop over all units
         foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
             // Add to leader list of units, set unit leader and material to group color
-            leader.AddUnit(unit);
+            leader.units.Add(unit);
             unit.SetLeader(leader);
             unit.SetMaterial(m_Data.groupMaterials[freeIndex]);
         }
 
-        // Clear list of selected units
+        // Clear list of selected units and create formation
         m_Data.selectedUnits.Clear();
+        leader.CreateFormation();
 
         if (newLeader)
         {

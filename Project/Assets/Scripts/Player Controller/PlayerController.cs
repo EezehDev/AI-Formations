@@ -42,5 +42,12 @@ public class PlayerController : MonoBehaviour
             // Set a new target
             unit.SetTarget(target);
         }
+
+        // Loop over all leaders
+        foreach (GroupLeader leader in m_Data.selectedLeaders)
+        {
+            // Set a new target
+            leader.SetTarget(target);
+        }
     }
 }
