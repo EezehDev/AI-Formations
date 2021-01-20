@@ -15,7 +15,6 @@ public class GroupLeader : MonoBehaviour
     // Navigation
     [SerializeField] private float m_Speed = 3f;
     [SerializeField] private float m_StopDistance = 0.1f;
-    [SerializeField] private float m_MinSpeed = 0.1f;
     private NavMeshPath m_Path;
     private Vector3 m_Target;
     private Vector3 m_Velocity;
