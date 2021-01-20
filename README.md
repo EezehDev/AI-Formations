@@ -102,17 +102,28 @@ As you can see in the image below, the position of the leader has great influenc
 
 For this research, I will use a virtual unit since it has the most flexibility and is easy to add using prefabs in Unity.
 
-Time to create the leader, for this I created a simple prefab based on the actual unit and changed the script to hold some public data that we can later use to access the units and ID of the group, which is used for the material color.
+Time to create the leader, for this I created a simple prefab based on the actual unit and changed the script to hold some data that we can later use to access the units and ID of the group, which is used for the material color. For now our AddUnit method doesn't do much, but this will help us update formations in the future. Last thing I added in the class is SetTransform which allows us to reposition the leader when needed.
 
 ```cs
 public class GroupLeader : MonoBehaviour
 {
     public int groupID = -1;
-    public List<UnitBehavior> units = new List<UnitBehavior>();
+    public List<UnitBehavior> units { get; private set; } = new List<UnitBehavior>();
+    
+    public void AddUnit(UnitBehavior unit)
+    {
+        units.Add(unit);
+    }
+    
+    public void SetTransform(Vector3 location, Quaternion rotation)
+    {
+        transform.position = location;
+        transform.rotation = rotation;
+    }
 }
 ```
 
-To decide the spawn position, I first ungroup all the groups currently selected. This makes sure that we have a free group slot and by writing all the selected units back into a list we can easily loop over them which will be needed later on.
+To decide the spawn position, I first ungroup all the groups currently selected. This makes sure that we have a free group slot and by writing all the selected units back into a list we can easily loop over them which will be needed later on. In case we only had a single group, I decided the group shouldn't reform but simply add units to the current leaders group. To make this work, I added a boolean that will tell us to destroy the leader or not.
 
 ```cs
         foreach (GroupLeader selectedLeader in m_Data.selectedLeaders)
@@ -122,14 +133,17 @@ To decide the spawn position, I first ungroup all the groups currently selected.
                 m_Data.selectedUnits.Add(unit);
             }
             
-            m_Data.groups[selectedLeader.groupID] = false;
-            Destroy(selectedLeader.gameObject);
+            if (destroyLeader)
+            {
+                m_Data.groups[selectedLeader.groupID] = false;
+                Destroy(selectedLeader.gameObject);
+            }
         }
 ```
 
 Once this is done, we can loop over our selected units and calculate a position for the new leader. Here we also have a few options, either we set the leader in the middle of all selected units essentially making sure that all units arrive at roughly the same time, or we can use an average position which makes already close units barely have to move while far away units have to travel towards them.
 
-I think calculating the middle of the group makes more sense, since it will make regrouping look more like an actual group being formed. So this is how I ended up implementing the leader spawning.
+I think calculating the middle of the group makes more sense, since it will make regrouping look more like an actual group being formed. So this is how I ended up implementing the leader spawning. Keep in mind there only needs to be a new leader spawned if we had no current leaders or multiple leaders.
 
 ```cs
         Vector3 minimum = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
@@ -157,20 +171,31 @@ I think calculating the middle of the group makes more sense, since it will make
         }
 
         Vector3 middle = (minimum + maximum) / 2f;
+        
+        GroupLeader leader = null;
+        if (newLeader)
+        {
+            // Instantiate a leader in middle of furthest units
+            GameObject go = Instantiate(m_GroupLeaderPrefab, middle, Quaternion.identity);
+            leader = go.GetComponent<GroupLeader>();
 
-        // Instantiate a leader in middle of furthest units
-        GameObject go = Instantiate(m_GroupLeaderPrefab, middle, Quaternion.identity);
-        GroupLeader leader = go.GetComponent<GroupLeader>();
+            // Assign group ID
+            leader.groupID = freeIndex;
+            m_Data.groups[freeIndex] = true;
+        }
+        else
+        {
+            leader = m_Data.selectedLeaders[0];
+            leader.SetTransform(middle, Quaternion.identity);
+        }
 ```
 
-Then all that is left to do, is set the group index and assign the units to the leader.
+Then all that is left to do, is assign all the units to the current leader. In case we are using an old leader, there will be some wasted operations here but that's not a big deal as long as the group sizes are relatively small.
 
 ```cs
-        leader.groupID = freeIndex;
-
         foreach (UnitBehavior unit in m_Data.selectedUnits)
         {
-            leader.units.Add(unit);
+            leader.AddUnit(unit);
             unit.SetLeader(leader);
         }
 ```
