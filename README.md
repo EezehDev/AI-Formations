@@ -46,7 +46,7 @@ Grouping is done by selecting multiple units, and assigning them in a different 
 
 **Navigation**
 
-We will be using A* pathfinding to navigate all units around obstacles in the environment, in combination with a navigation mesh. A* is very flexible algorithm and can be used in many other cases. Using a good navigation algorithm is essential to our coordinated movement.
+We will be using A* pathfinding to navigate all units around obstacles in the environment, in combination with a navigation mesh. A* is very flexible algorithm and can be used in many other cases. Using a good navigation algorithm is essential to our coordinated movement, and will play a big part when it comes to grouping up our units, moving the formation around and the way they handling obstacles.
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/navigation.gif" alt="navigation example" width="500" />
 
