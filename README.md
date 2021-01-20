@@ -75,24 +75,24 @@ Then I just keep track of which groups are currently taken, together with an arr
     public Material[] groupMaterials = new Material[maxGroups];
 ```
 
-**Group Movement**
+**Start of Formations**
 
 Before we can start actually moving one of the groups, it is important to take a look at how this can be done. Let's begin with the most important parts of a group, what essentially makes a group before we can start moving it.
 
-- **The Leader**
+**The Leader**
 
 Starting with the most important role, the leader is in charge of keeping the group together and will be responsible for coordinating the movement. Where the leader goes, the group will follow it essentially works as the "pivot point / center" of the group. But that is not his only task, in a game environment he must also keep track of some data. Amount of units in the group, current formation and position of each unit, speed of the group, etc.
 
 When it comes to selecting a leader, you have a few options:
-1. Random unit
+**1. Random unit**
 
 Choosing a random unit is a simple solution but comes with some disadvantages. Upon creating a group, one unit will take on the role as leader and hold all the necessary data. All units will follow his movement, this is the main issue. A random unit will never be the same when creating a group, and since all group members follow the leader the movement will never be the same between two similar groups. You can change the position of the leader within the group, but that doesn't quite solve the issue since your leader can not break the formation, often making groups where the leader can not be in the center behave different from the rest.
 
-2. Virtual unit
+**2. Virtual unit**
 
 To fix the above issues, we can create a new unit that doesn't have a visual representation. This unit can be placed anywhere in the formation without the player noticing and gives us more control over the group. Most of the time you will want this unit to be in the center, making formations behave as you would expect. In some cases games will make the leader stronger, so to fix this you would still have to assign a random unit the leader role while keeping all the data stored in this virtual unit.
 
-3. Most important unit
+**3. Most important unit**
 
 This type is often the case in video games (at least visually), where one unit will be chosen as leader based on different stats (strongest becomes leader). This comes with the advantage of being able to adapt the formation to protect the leader, making a square around it or forming a line behind them. The same principles apply as with a random unit.
 
@@ -196,9 +196,106 @@ Then all that is left to do, is assign all the units to the current leader. In c
         }
 ```
 
-- **The Formation**
+**The Formation**
 
-Every group also has a formation, usually formations are strategic positions to gain an advantage in a fight due to a stronger offensive or defensive position. This means that the core of a formation needs to remain intact whenever possible. Formations also require some data, such as: rows, columns, units per row/column, location of each unit, etc. To start off easy we can add this formation data to our leader, and set all the locations relative to the leader's position.                    
+Every group also has a formation, usually formations are strategic positions to gain an advantage in a fight due to a stronger offensive or defensive position. This means that the core of a formation needs to remain intact whenever possible. Formations also require some data, such as: rows, columns, units per row/column, location of each unit, etc. To start off easy we can add this formation data to our leader, and set all the locations relative to the leader's position.
+
+The data added to the leader, I'm again using prefabs so it is possible to parent the objects and navigate towards the relative position. This also allows for visual representation, making it easier to debug.
+
+```cs
+    [SerializeField] private GameObject m_FormationPointPrefab = null;
+    private List<Transform> m_FormationTransforms = new List<Transform>();
+```
+
+As a test formation, I implemented a basic line formation that scales with amount of units in the group.
+
+```cs
+        Vector3 currentPosition = Vector3.zero;
+        currentPosition.x = -unitWidth * (amountUnits / 2f) + (unitWidth / 2f);
+
+        for (int index = 0; index < amountUnits; index++)
+        {
+            // Instantiate a point parented to the leader, with a relative position
+            GameObject go = Instantiate(m_FormationPointPrefab, transform);
+            go.transform.localPosition = currentPosition;
+            m_FormationTransforms.Add(go.transform);
+
+            // Update current position
+            currentPosition.x += unitWidth;
+        }
+```
+
+To have the units move to their corresponding point, we can simply tell each of the NavMeshAgent to navigate to the transform positions.
+
+```cs
+    for (int index = 0; index < units.Count; index++)
+        {
+            units[index].SetTarget(m_FormationTransforms[index].position);
+        }
+```
+
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/line-formation.gif" alt="line-formation example" width="500" />
+
+So this is basically all it takes to create a formation, but we still can't move around the group. In order to do so, we have to manually update the virtual leader's position using the nav mesh. Using the NavMeshAgent would make our leader collide with the units, and start pushing the group around.
+
+**Formation Movement**
+
+First of all, let's define the data needed to make the pathfinding work in a similar way as the NavMeshAgent. NavMeshAgent component uses a maximum speed and stopping distance to reach the target location along a path. On top of this, let's save the actual target position and our current velocity so we can reuse this data. To make sure we don't get weird behavior, it's also smart to initialise these values at the start.
+
+It should look somewhat like this:
+
+```cs
+    [SerializeField] private float m_Speed = 3f;
+    [SerializeField] private float m_StopDistance = 0.1f;
+    private NavMeshPath m_Path;
+    private Vector3 m_Target;
+    private Vector3 m_Velocity;
+    
+    private void Start()
+    {
+        m_Path = new NavMeshPath();
+        m_Velocity = Vector3.zero;
+        m_Target = transform.position;
+    }
+```
+
+To update the data and path, we simply change our target and check if the distance is further away than the allowed StopDistance. Once we have a path, we can get the direction towards the next point and move around leader over time. To have some sort of rotation implemented, I used the current velocity and atan2 to get the rotation angle. At the end of the update function, we can then command our units to move back onto the transform points making them follow every movement and rotation the leader makes.
+
+```cs
+private void FixedUpdate()
+    {
+        if (Vector3.Distance(transform.position, m_Target) > m_StopDistance)
+        {
+            NavMesh.CalculatePath(transform.position, m_Target, NavMesh.AllAreas, m_Path);
+
+            if (m_Path.corners.Length > 1)
+            {
+                Vector3 direction = (m_Path.corners[1] - transform.position).normalized;
+                m_Velocity = direction * m_Speed;
+            }
+        }
+        else
+        {
+            m_Velocity = Vector3.zero;
+        }
+
+        if (m_Velocity != Vector3.zero)
+        {
+            transform.position += (m_Velocity * Time.fixedDeltaTime);
+
+            float rotation = 90f - (Mathf.Rad2Deg * Mathf.Atan2(m_Velocity.z, m_Velocity.x));
+            transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+        }
+
+        MoveUnits();
+    }
+```
+
+Now that this is implemented we're starting to see the results of moving in group, but it is far from perfect. There is currently only one formation that has no limitations, rotation is instant and makes the group collide with eachother while trying to reach the transform points. The units also don't look like a group when they need to get past obstacles, they either split up or walk straight into the walls.
+
+Overall I'm quite happy with the progress so far.
+
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/formation-movement.gif" alt="formation-movement example" width="500" />
 
 ## Functionality
 
