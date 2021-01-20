@@ -60,20 +60,9 @@ One last thing before starting with the real deal, is to add grouping functional
 
 **Player Data**
 
-In my current model, the player keeps track of some data to make sure we can easily group and ungroup units. I store both units and leaders seperate, since the unit list is only made for undividual units. This way I can tell the units to just simply move to a point, while the leaders will command their own units.
+In my current model, the player keeps track of some data to make sure we can easily group and ungroup units. I store both units and leaders in seperate lists, since the unit list is only made for undividual units. This way I can tell the units to just simply move to a point, while the leaders will command their own units.
 
-Then I just keep track of which groups are currently taken, together with an array of materials used to change unit color.
-
-```cs
-    // Unit list
-    public List<UnitBehavior> selectedUnits = new List<UnitBehavior>();
-    public List<GroupLeader> selectedLeaders = new List<GroupLeader>();
-
-    // Groups
-    const int maxGroups = 4;
-    public bool[] groups = new bool[maxGroups];
-    public Material[] groupMaterials = new Material[maxGroups];
-```
+Then I also keep track of which groups are currently taken, together with an array of materials used to change unit color.
 
 **Start of Formations**
 
@@ -84,6 +73,7 @@ Before we can start actually moving one of the groups, it is important to take a
 Starting with the most important role, the leader is in charge of keeping the group together and will be responsible for coordinating the movement. Where the leader goes, the group will follow it essentially works as the "pivot point / center" of the group. But that is not his only task, in a game environment he must also keep track of some data. Amount of units in the group, current formation and position of each unit, speed of the group, etc.
 
 When it comes to selecting a leader, you have a few options:
+
 **1. Random unit**
 
 Choosing a random unit is a simple solution but comes with some disadvantages. Upon creating a group, one unit will take on the role as leader and hold all the necessary data. All units will follow his movement, this is the main issue. A random unit will never be the same when creating a group, and since all group members follow the leader the movement will never be the same between two similar groups. You can change the position of the leader within the group, but that doesn't quite solve the issue since your leader can not break the formation, often making groups where the leader can not be in the center behave different from the rest.
@@ -104,134 +94,84 @@ For this research, I will use a virtual unit since it has the most flexibility a
 
 Time to create the leader, for this I created a simple prefab based on the actual unit and changed the script to hold some data that we can later use to access the units and ID of the group, which is used for the material color. I also added a SetTransform method which allows us to reposition the leader when needed.
 
-```cs
-public class GroupLeader : MonoBehaviour
-{
-    public int groupID = -1;
-    public List<UnitBehavior> units = new List<UnitBehavior>();
+```
+    groupID = -1;
+    units = empty;
     
-    public void SetTransform(Vector3 location, Quaternion rotation)
-    {
-        transform.position = location;
-        transform.rotation = rotation;
-    }
-}
+    Function SetTransform(location, rotation)
+        Set position = location;
+        Set rotation = rotation;
 ```
 
 To decide the spawn position, I first ungroup all the groups currently selected. This makes sure that we have a free group slot and by writing all the selected units back into a list we can easily loop over them which will be needed later on. In case we only had a single group, I decided the group shouldn't reform but simply add units to the current leaders group. To make this work, I added a boolean that will tell us to destroy the leader or not.
 
-```cs
-        foreach (GroupLeader selectedLeader in m_Data.selectedLeaders)
-        {
-            foreach (UnitBehavior unit in selectedLeader.units)
-            {
-                m_Data.selectedUnits.Add(unit);
-            }
+```
+        For each selectedLeader in data.selectedLeader
+            For each unit in selectedLeader.units
+                Add unit to data.selectedUnits;
             
-            if (destroyLeader)
-            {
-                m_Data.groups[selectedLeader.groupID] = false;
-                Destroy(selectedLeader.gameObject);
-            }
-        }
+        If (destroyLeader)
+            Set data.groups[selectedLeader.groupID] = false;
 ```
 
 Once this is done, we can loop over our selected units and calculate a position for the new leader. Here we also have a few options, either we set the leader in the middle of all selected units essentially making sure that all units arrive at roughly the same time, or we can use an average position which makes already close units barely have to move while far away units have to travel towards them.
 
 I think calculating the middle of the group makes more sense, since it will make regrouping look more like an actual group being formed. So this is how I ended up implementing the leader spawning. Keep in mind there only needs to be a new leader spawned if we had no current leaders or multiple leaders.
 
-```cs
-        Vector3 minimum = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
-        Vector3 maximum = new Vector3(-Mathf.Infinity, -Mathf.Infinity, -Mathf.Infinity);
+```
+        location minimumPos = (infinity, infinity, infinity);
+        location maximumPos = (-infinity, -infinity, -infinity);
         
-        // Loop over all units
-        foreach (UnitBehavior unit in m_Data.selectedUnits)
-        {
-            Vector3 unitPosition = unit.transform.position;
+        For each unit in data.selectedUnits
+            If (unit.position < minimumPos)
+                Set minimumPos = unit.position;
+            Else if (unit.position > maximumPos)
+                Set maximumPos = unit.position;
 
-            if (unitPosition.x < minimum.x)
-                minimum.x = unitPosition.x;
-            if (unitPosition.x > maximum.x)
-                maximum.x = unitPosition.x;
-
-            if (unitPosition.y < minimum.y)
-                minimum.y = unitPosition.y;
-            if (unitPosition.y > maximum.y)
-                maximum.y = unitPosition.y;
-
-            if (unitPosition.z < minimum.z)
-                minimum.z = unitPosition.z;
-            if (unitPosition.z > maximum.z)
-                maximum.z = unitPosition.z;
-        }
-
-        Vector3 middle = (minimum + maximum) / 2f;
+        middle = (minimum + maximum) / 2;
         
-        GroupLeader leader = null;
-        if (newLeader)
-        {
-            // Instantiate a leader in middle of furthest units
-            GameObject go = Instantiate(m_GroupLeaderPrefab, middle, Quaternion.identity);
-            leader = go.GetComponent<GroupLeader>();
-
-            // Assign group ID
-            leader.groupID = freeIndex;
-            m_Data.groups[freeIndex] = true;
-        }
-        else
-        {
-            leader = m_Data.selectedLeaders[0];
-            leader.SetTransform(middle, Quaternion.identity);
-            leader.units.Clear();
-        }
+        If (newLeader)
+            Set leader = leader spawned in middle
+            Set leader.groupID = freeIndex;
+            Set data.groups[freeIndex] = true;
+        Else
+            Set leader = data.selectedLeaders[0];
+            Call leader.SetTransform(middle, zeroRotation);
+            Clear leader.units;
 ```
 
 Then all that is left to do, is assign all the units to the current leader. In case we are using an old leader, there will be some wasted operations here but that's not a big deal as long as the group sizes are relatively small.
 
 ```cs
-        foreach (UnitBehavior unit in m_Data.selectedUnits)
-        {
-            leader.units.Add(unit);
-            unit.SetLeader(leader);
-        }
+        For each unit in data.selectedUnits
+            Add unit to leader.units;
+            Call unit.SetLeader(leader);
 ```
 
 **The Formation**
 
 Every group also has a formation, usually formations are strategic positions to gain an advantage in a fight due to a stronger offensive or defensive position. This means that the core of a formation needs to remain intact whenever possible. Formations also require some data, such as: rows, columns, units per row/column, location of each unit, etc. To start off easy we can add this formation data to our leader, and set all the locations relative to the leader's position.
 
-The data added to the leader, I'm again using prefabs so it is possible to parent the objects and navigate towards the relative position. This also allows for visual representation, making it easier to debug.
-
-```cs
-    [SerializeField] private GameObject m_FormationPointPrefab = null;
-    private List<Transform> m_FormationTransforms = new List<Transform>();
-```
-
 As a test formation, I implemented a basic line formation that scales with amount of units in the group.
 
 ```cs
-        Vector3 currentPosition = Vector3.zero;
-        currentPosition.x = -unitWidth * (amountUnits / 2f) + (unitWidth / 2f);
+        location currentPosition = (0, 0, 0);
+        Set currentPosition.x = -unitWidth * (amountUnits / 2) + (unitWidth / 2);
 
-        for (int index = 0; index < amountUnits; index++)
-        {
-            // Instantiate a point parented to the leader, with a relative position
-            GameObject go = Instantiate(m_FormationPointPrefab, transform);
-            go.transform.localPosition = currentPosition;
-            m_FormationTransforms.Add(go.transform);
-
-            // Update current position
-            currentPosition.x += unitWidth;
-        }
+        index = 0;
+        For (index < amountUnits)
+            Spawn point;
+            Set point.relativePosition = currentPosition;
+            Add point to transformPoints;
+            Set currentPosition.x = currentPosition.x + unitWidth;
 ```
 
 To have the units move to their corresponding point, we can simply tell each of the NavMeshAgent to navigate to the transform positions.
 
 ```cs
-    for (int index = 0; index < units.Count; index++)
-        {
-            units[index].SetTarget(m_FormationTransforms[index].position);
-        }
+    index = 0;
+    for (index < amountUnits)
+        Call units[index].SetTarget(transformPoints[index].position);
 ```
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/line-formation.gif" alt="line-formation example" width="500" />
@@ -245,49 +185,36 @@ First of all, let's define the data needed to make the pathfinding work in a sim
 It should look somewhat like this:
 
 ```cs
-    [SerializeField] private float m_Speed = 3f;
-    [SerializeField] private float m_StopDistance = 0.1f;
-    private NavMeshPath m_Path;
-    private Vector3 m_Target;
-    private Vector3 m_Velocity;
+    speed = 3;
+    stopDistance = 0.1;
+    path = empty;
+    targetLocation = (0, 0, 0);
+    velocity = (0, 0, 0);
     
-    private void Start()
-    {
-        m_Path = new NavMeshPath();
-        m_Velocity = Vector3.zero;
-        m_Target = transform.position;
-    }
+    Function Start()
+        Set path = new path;
+        Set targetLocation = currentLocation;
 ```
 
 To update the data and path, we simply change our target and check if the distance is further away than the allowed StopDistance. Once we have a path, we can get the direction towards the next point and move around leader over time. To have some sort of rotation implemented, I used the current velocity and atan2 to get the rotation angle. At the end of the update function, we can then command our units to move back onto the transform points making them follow every movement and rotation the leader makes.
 
 ```cs
-private void FixedUpdate()
-    {
-        if (Vector3.Distance(transform.position, m_Target) > m_StopDistance)
-        {
-            NavMesh.CalculatePath(transform.position, m_Target, NavMesh.AllAreas, m_Path);
+    Every frame
+        deltaTime = time since last frame;
+    
+        If (distance(position, targetLocation) > stopDistance)
+            Calculate path using NavMesh
+            Set direction = (path.point - position).normalized;
+            Set velocity = direction * speed;
+        Else
+            Set velocity = (0, 0, 0);
 
-            if (m_Path.corners.Length > 1)
-            {
-                Vector3 direction = (m_Path.corners[1] - transform.position).normalized;
-                m_Velocity = direction * m_Speed;
-            }
-        }
-        else
-        {
-            m_Velocity = Vector3.zero;
-        }
+        If (velocity != (0, 0, 0))
+            Set position = position + (velocity * deltaTime);
+            Set atan = Call atan(velocity.y, velocity.x)
+            Set rotation = 90 - (atan * degrees);
 
-        if (m_Velocity != Vector3.zero)
-        {
-            transform.position += (m_Velocity * Time.fixedDeltaTime);
-
-            float rotation = 90f - (Mathf.Rad2Deg * Mathf.Atan2(m_Velocity.z, m_Velocity.x));
-            transform.rotation = Quaternion.Euler(0f, rotation, 0f);
-        }
-
-        MoveUnits();
+        Call MoveUnits();
     }
 ```
 
