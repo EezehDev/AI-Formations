@@ -24,8 +24,8 @@ public class GroupLeader : MonoBehaviour
     {
         // Initialize navigation data
         m_Path = new NavMeshPath();
-        m_Target = transform.position;
         m_Velocity = Vector3.zero;
+        m_Target = transform.position;
     }
 
     private void FixedUpdate()
@@ -68,6 +68,7 @@ public class GroupLeader : MonoBehaviour
     {
         transform.position = location;
         transform.rotation = rotation;
+        m_Target = location;
     }
 
     public void CreateFormation()
