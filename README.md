@@ -72,7 +72,7 @@ As you can see in the image below, the position of the leader has great influenc
 
 ![leader differences](https://github.com/MrEezeh/AI-Formations/blob/main/Images/leaders.jpg)
 
-Using a virtual leader has the most benefits, since it can also assign a random or most important unit to take on the visual role as leader. It is important that we give this leader the functionality to reposition within the group and keep a list of all the units so we can control them through our this class.
+Using a virtual leader has the most benefits, since it can also assign a random or most important unit to take on the visual role as leader. It is important that we give this leader the functionality to reposition within the group and keep a list of all the units so we can control them through this class.
 
 To decide the spawn position we can either set the leader in the middle of all selected units making sure that all units arrive at roughly the same time, or we can use an average position which makes already close units barely have to move while far away units have to travel towards them.
 
@@ -101,7 +101,7 @@ For each unit in selectedUnits
     Set unit.leader = leader;
 ```
 
-**The Formation**
+**Formations**
 
 Every group has a formation, usually formations are strategic positions to gain an advantage in a fight due to a stronger offensive or defensive position. This means that the core of a formation needs to remain intact whenever possible. Formations also require some data, such as: rows, columns, units per row/column, location of each unit, etc. To start off easy we can add this formation data to our leader, and set all the locations relative to the leader's position.
 
@@ -152,9 +152,19 @@ Here is an example of how the current progression looks like:
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/formation-movement.gif" alt="formation-movement example" width="500" />
 
-As you can see, units from the same formation have trouble keeping up with the leader and can bump into eachother since they aren't aware of their adjacent units. There is also a problem where the formation can become impossible to complete due to the transformation points being inside obstacles. Currently our group can also split up at random positions if the units can't seem to create a path in that direction, making our formation fall apart.
+As you can see, units from the same formation have trouble keeping up with the leader and can bump into eachother since they aren't aware of their adjacent units. Then there is the problem where the formation becomes impossible to complete due to the transformation points being inside obstacles. Currently our group can also split up at random positions if the units can't seem to create a path in that direction, making our formation fall apart.
 
-For now we also only have one semi-hardcoded formation, and it would be a better idea to make the group be able to switch and change formation at runtime.
+For now we are using only one semi-hardcoded formation, and it would be a better idea to make the group be able to switch and change formation at runtime.
+
+**Unit Cohesion**
+
+**1. Group Speed**
+
+It's a good idea to get the lowest unit speed and use this as a reference for our group speed. Our leader should move at the speed of the slowest unit so our formation never moves faster than the slowest unit alone, if we then set the speed of all units in our group to at least match this speed with a small multiplication our units will be able to catch up to the group. Careful not to set this speed multiplier too high, as it will start feeling unnatural to the player. 
+
+**2. Group rotation**
+
+We should limit the angular speed or speed at which the leader can rotate based on our group size in order to prevent sharp turns that can break our formation. Using an angular velocity makes navigating a bit more complex since you are no longer allowed to simply move straight to your destinations, but instead need to rotate while walking in that direction.
 
 ## Result
 

@@ -91,6 +91,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3009904002748772493}
   - component: {fileID: 5583246092691689496}
+  - component: {fileID: 876902578621251357}
   m_Layer: 9
   m_Name: GroupLeader
   m_TagString: Untagged
@@ -128,6 +129,22 @@ MonoBehaviour:
   groupID: -1
   units: []
   m_FormationPointPrefab: {fileID: 3009904002748542317, guid: d10caeb4366a3084b829548b3a5fd8f5, type: 3}
-  m_Speed: 3
+  m_SpeedAmplifier: 1.5
   m_StopDistance: 0.1
-  m_MinSpeed: 0.1
+  m_MaxAngularSpeed: 30
+--- !u!54 &876902578621251357
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3009904002748542317}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0.05
+  m_UseGravity: 0
+  m_IsKinematic: 0
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0

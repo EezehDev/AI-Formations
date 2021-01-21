@@ -2,6 +2,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 
+[RequireComponent(typeof(Rigidbody))]
 public class GroupLeader : MonoBehaviour
 {
     // Group info
@@ -13,18 +14,24 @@ public class GroupLeader : MonoBehaviour
     private List<Transform> m_FormationTransforms = new List<Transform>();
 
     // Navigation
-    [SerializeField] private float m_Speed = 3f;
+    [SerializeField] private float m_SpeedAmplifier = 1.3f;
     [SerializeField] private float m_StopDistance = 0.1f;
+    [SerializeField] private float m_MaxAngularSpeed = 10f;
+    private Rigidbody m_Rigidbody;
     private NavMeshPath m_Path;
     private Vector3 m_Target;
-    private Vector3 m_Velocity;
+    private Vector3 m_TargetDirection;
+    private float m_MaxSpeed = 0f;
+    private float m_Speed = 0f;
+    private float m_AngularSpeed = 0f;
 
     private void Start()
     {
         // Initialize navigation data
         m_Path = new NavMeshPath();
-        m_Velocity = Vector3.zero;
         m_Target = transform.position;
+        m_TargetDirection = transform.position;
+        m_Rigidbody = GetComponent<Rigidbody>();
     }
 
     private void FixedUpdate()
@@ -38,35 +45,35 @@ public class GroupLeader : MonoBehaviour
             // If we have a path
             if (m_Path.corners.Length > 1)
             {
-                Vector3 direction = (m_Path.corners[1] - transform.position).normalized;
-                m_Velocity = direction * m_Speed;
+                m_TargetDirection = (m_Path.corners[1] - transform.position).normalized;
+                m_Speed = m_MaxSpeed;
             }
         }
         else
         {
-            // Reset velocity
-            m_Velocity = Vector3.zero;
+            // Reset speed and angular velocity
+            m_Speed = 0f;
+            m_Rigidbody.angularVelocity = Vector3.zero;
         }
 
-        // If we have a velocity
-        if (m_Velocity != Vector3.zero)
+        // If we have a speed
+        if (m_Speed != 0f)
         {
-            // Update position using velocity
-            transform.position += (m_Velocity * Time.fixedDeltaTime);
+            float rotation = Vector3.Cross(m_TargetDirection, transform.forward).y;
 
-            // Update rotation using velocity
-            float rotation = 90f - (Mathf.Rad2Deg * Mathf.Atan2(m_Velocity.z, m_Velocity.x));
-            transform.rotation = Quaternion.Euler(0f, rotation, 0f);
+            m_Rigidbody.angularVelocity = new Vector3(0f, rotation, 0f) * -m_AngularSpeed;
+
+            // Update position using speed
+            transform.position += (m_Speed * transform.forward * Time.fixedDeltaTime);
         }
 
         // Move the units
         MoveUnits();
     }
 
-    public void SetTransform(Vector3 location, Quaternion rotation)
+    public void SetLocation(Vector3 location)
     {
         transform.position = location;
-        transform.rotation = rotation;
         m_Target = location;
     }
 
@@ -90,6 +97,9 @@ public class GroupLeader : MonoBehaviour
             }
         }
 
+        // Speed values
+        float slowestSpeed = Mathf.Infinity;
+
         // Loop for each unit
         for (int index = 0; index < amountUnits; index++)
         {
@@ -106,9 +116,26 @@ public class GroupLeader : MonoBehaviour
                 m_FormationTransforms.Add(go.transform);
             }
 
+            // Save the lowest speed
+            float unitSpeed = units[index].GetNormalSpeed();
+            if (unitSpeed < slowestSpeed)
+            {
+                slowestSpeed = unitSpeed;
+            }
+
             // Update current position
             currentPosition.x += unitWidth;
         }
+
+        // Apply speed to group, set all units to match this speed increased with amplifier
+        m_MaxSpeed = slowestSpeed;
+        foreach (UnitBehavior unit in units)
+        {
+            unit.SetMinimumSpeed(slowestSpeed * m_SpeedAmplifier);
+        }
+
+        // Set angular speed
+        m_AngularSpeed = m_MaxAngularSpeed / amountUnits;
     }
 
     // Set a new target

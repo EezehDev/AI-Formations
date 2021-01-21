@@ -18,6 +18,7 @@ public class UnitBehavior : MonoBehaviour
 
     // NavMeshAgent
     private NavMeshAgent m_NavMeshAgent = null;
+    private float m_NormalSpeed = 0;
 
     // Group
     private GroupLeader m_Leader = null;
@@ -32,6 +33,7 @@ public class UnitBehavior : MonoBehaviour
 
         // Set NavMeshAgent reference
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
+        m_NormalSpeed = m_NavMeshAgent.speed;
     }
 
     // Code to execute when selecting unit
@@ -60,16 +62,40 @@ public class UnitBehavior : MonoBehaviour
         m_NavMeshAgent.SetDestination(target);
     }
 
-    public void SetLeader(GroupLeader leader)
+    // Get the units speed
+    public float GetNormalSpeed()
     {
-        m_Leader = leader;
+        return m_NormalSpeed;
     }
 
+    // If our speed is lower than given speed, set new speed
+    public void SetMinimumSpeed(float speed)
+    {
+        if (m_NavMeshAgent.speed < speed)
+        {
+            m_NavMeshAgent.speed = speed;
+        }
+    }
+
+    // Get current leader
     public GroupLeader GetLeader()
     {
         return m_Leader;
     }
 
+    // Set new leader
+    public void SetLeader(GroupLeader leader)
+    {
+        // If we remove leader, set speed back to normal
+        if (leader == null)
+        {
+            m_NavMeshAgent.speed = m_NormalSpeed;
+        }
+
+        m_Leader = leader;
+    }
+
+    // Change mesh material
     public void SetMaterial(Material material = null)
     {
         if (material == null)

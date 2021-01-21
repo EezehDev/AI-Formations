@@ -291,7 +291,7 @@ public class PlayerSelect : MonoBehaviour
         else
         {
             leader = m_Data.selectedLeaders[0];
-            leader.SetTransform(middle, Quaternion.identity);
+            leader.SetLocation(middle);
             leader.units.Clear();
         }
 
