@@ -156,15 +156,17 @@ As you can see, units from the same formation have trouble keeping up with the l
 
 For now we are using only one semi-hardcoded formation, and it would be a better idea to make the group be able to switch and change formation at runtime.
 
-**Unit Cohesion**
+**Group Cohesion**
 
-**1. Group Speed**
+**1. Unit Speed**
 
 It's a good idea to get the lowest unit speed and use this as a reference for our group speed. Our leader should move at the speed of the slowest unit so our formation never moves faster than the slowest unit alone, if we then set the speed of all units in our group to at least match this speed with a small multiplication our units will be able to catch up to the group. Careful not to set this speed multiplier too high, as it will start feeling unnatural to the player. 
 
-**2. Group rotation**
+**2. Leader rotation**
 
 We should limit the angular speed or speed at which the leader can rotate based on our group size in order to prevent sharp turns that can break our formation. Using an angular velocity makes navigating a bit more complex since you are no longer allowed to simply move straight to your destinations, but instead need to rotate while walking in that direction.
+
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/group-cohesion.gif" alt="group-cohesion example" width="500" />
 
 ## Result
 

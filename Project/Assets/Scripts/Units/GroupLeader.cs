@@ -15,8 +15,8 @@ public class GroupLeader : MonoBehaviour
 
     // Navigation
     [SerializeField] private float m_SpeedAmplifier = 1.3f;
-    [SerializeField] private float m_StopDistance = 0.1f;
-    [SerializeField] private float m_MaxAngularSpeed = 10f;
+    [SerializeField] private float m_StopDistance = 0.2f;
+    [SerializeField] private float m_MaxAngularSpeed = 60f;
     private Rigidbody m_Rigidbody;
     private NavMeshPath m_Path;
     private Vector3 m_Target;
@@ -37,7 +37,8 @@ public class GroupLeader : MonoBehaviour
     private void FixedUpdate()
     {
         // If we are further away than stop distance
-        if (Vector3.Distance(transform.position, m_Target) > m_StopDistance)
+        float targetDistance = Vector3.Distance(transform.position, m_Target);
+        if (targetDistance > m_StopDistance)
         {
             // Recalculate path
             NavMesh.CalculatePath(transform.position, m_Target, NavMesh.AllAreas, m_Path);
@@ -60,7 +61,6 @@ public class GroupLeader : MonoBehaviour
         if (m_Speed != 0f)
         {
             float rotation = Vector3.Cross(m_TargetDirection, transform.forward).y;
-
             m_Rigidbody.angularVelocity = new Vector3(0f, rotation, 0f) * -m_AngularSpeed;
 
             // Update position using speed

@@ -130,8 +130,8 @@ MonoBehaviour:
   units: []
   m_FormationPointPrefab: {fileID: 3009904002748542317, guid: d10caeb4366a3084b829548b3a5fd8f5, type: 3}
   m_SpeedAmplifier: 1.5
-  m_StopDistance: 0.1
-  m_MaxAngularSpeed: 30
+  m_StopDistance: 0.2
+  m_MaxAngularSpeed: 60
 --- !u!54 &876902578621251357
 Rigidbody:
   m_ObjectHideFlags: 0
