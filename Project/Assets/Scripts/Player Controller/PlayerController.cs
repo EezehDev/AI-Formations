@@ -23,6 +23,9 @@ public class PlayerController : MonoBehaviour
         // Upon right clicking
         if (Input.GetMouseButtonUp(1))
         {
+            if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count == 0)
+                return;
+
             // Get mouse location
             Vector3 mouseLocation = Input.mousePosition;
             mouseLocation.z = Camera.main.transform.position.y;
