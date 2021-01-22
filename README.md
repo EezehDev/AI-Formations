@@ -186,7 +186,7 @@ One of the most important and difficult tasks for a group, is to make room for g
 
 As a last improvement, you can choose to upgrade how your formation deals with pathing in general. This can be things like splitting up the formation at certain points without losing strength, and regrouping them correctly after. By doing this, you allow the group to arrive faster than moving them all towards the same choke point.
 
-Being flexible with the pathfinding algorithm is a good idea when it comes to performance, usually you want to split up your pathfinding into two different methods. One used for long distances to decrease computing time, and one for handling pathing around smaller objects and spaces with more accurate results. Often this is referred as divide-and-conquer, as we split up the issue into smaller parts. [read more on pathfinding](https://github.com/MrEezeh/AI-Formations/#sources)
+Being flexible with the pathfinding algorithm is a good idea when it comes to performance, usually you want to split up your pathfinding into two different methods. One used for long distances to decrease computing time, and one for handling pathing around smaller objects and spaces with more accurate results. Often this is referred as divide-and-conquer, as we split up the issue into smaller parts.
 
 ## Result
 
