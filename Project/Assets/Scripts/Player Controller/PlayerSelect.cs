@@ -14,7 +14,8 @@ public class PlayerSelect : MonoBehaviour
 
     // Grouping
     [SerializeField] private GameObject m_GroupLeaderPrefab = null;
-    const int m_GroupLimit = 24;
+    const int m_MinGroupSize = 4;
+    const int m_MaxGroupSize = 24;
 
 
     // -------------------------
@@ -234,13 +235,14 @@ public class PlayerSelect : MonoBehaviour
         if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
             return;
 
-        // Only execute when we have at least 2 groups or units selected
+        // Only execute when we have at least 2 groups
         if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count < 2)
         {
             HUDManager.Instance.SetErrorMessage("Selected units already grouped.");
             return;
         }
-        if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count < 2)
+        // Or minimum amount of units selected
+        if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count < m_MinGroupSize)
             return;
 
         // Check if we exceed maximum group size
@@ -255,7 +257,7 @@ public class PlayerSelect : MonoBehaviour
         amountUnits += m_Data.selectedUnits.Count;
 
         // Only execute if we are within group size limit
-        if (amountUnits > m_GroupLimit)
+        if (amountUnits > m_MaxGroupSize)
         {
             HUDManager.Instance.SetErrorMessage("Too many units selected.");
             return;

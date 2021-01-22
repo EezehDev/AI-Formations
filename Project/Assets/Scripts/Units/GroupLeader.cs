@@ -15,12 +15,14 @@ public class GroupLeader : MonoBehaviour
     [Header("Formation")]
     [SerializeField] private GameObject m_FormationPointPrefab = null;
     private List<Transform> m_FormationTransforms = new List<Transform>();
-    private FormationType m_CurrentFormation = FormationType.line;
+    private FormationType m_CurrentFormation;
+    private bool m_Wheeling;
 
     // All formation types
     private enum FormationType
     {
-        line
+        line,
+        circle
     };
 
     // Navigation
@@ -45,6 +47,10 @@ public class GroupLeader : MonoBehaviour
     // Initialise path and target
     private void Start()
     {
+        // Initialize formation data
+        m_CurrentFormation = FormationType.line;
+        m_Wheeling = true;
+
         // Initialize navigation data
         m_Path = new NavMeshPath();
         m_Target = transform.position;
@@ -79,11 +85,22 @@ public class GroupLeader : MonoBehaviour
         // If we have a speed
         if (m_Speed != 0f)
         {
-            float rotation = Vector3.Cross(m_TargetDirection, transform.forward).y;
-            m_Rigidbody.angularVelocity = new Vector3(0f, rotation, 0f) * -m_AngularSpeed;
+            if (m_Wheeling)
+            {
+                float rotation = Vector3.Cross(m_TargetDirection, transform.forward).y;
+                m_Rigidbody.angularVelocity = new Vector3(0f, rotation, 0f) * -m_AngularSpeed;
 
-            // Update position using speed
-            transform.position += (m_Speed * transform.forward * Time.fixedDeltaTime);
+                // Update position using speed
+                transform.position += (m_Speed * transform.forward * Time.fixedDeltaTime);
+            }
+            else
+            {
+                if (m_Speed != 0f)
+                {
+                    // Update position using speed
+                    transform.position += (m_Speed * m_TargetDirection * Time.fixedDeltaTime);
+                }
+            }
         }
 
         // Move the units
@@ -128,7 +145,10 @@ public class GroupLeader : MonoBehaviour
         switch (m_CurrentFormation)
         {
             case FormationType.line:
-                Debug.Log("switching from line formation");
+                m_CurrentFormation = FormationType.circle;
+                break;
+            case FormationType.circle:
+                m_CurrentFormation = FormationType.line;
                 break;
         }
 
@@ -145,6 +165,9 @@ public class GroupLeader : MonoBehaviour
         {
             case FormationType.line:
                 CreateLineFormation(); // create line formation
+                break;
+            case FormationType.circle:
+                CreateCircleFormation(); // create line formation
                 break;
         }
 
@@ -199,6 +222,9 @@ public class GroupLeader : MonoBehaviour
     // Creates a line formation, using the leader as center
     private void CreateLineFormation()
     {
+        // Wheel true, as we need to rotate when changing direction
+        m_Wheeling = true;
+
         // Store unit count
         int amountUnits = units.Count;
 
@@ -264,6 +290,37 @@ public class GroupLeader : MonoBehaviour
             {
                 // Update X position
                 currentPosition.x += unitWidth;
+            }
+        }
+    }
+
+    // Creates a circle formation, with a gap in the center
+    private void CreateCircleFormation()
+    {
+        // A circle does not need to rotate, wheeling false
+        m_Wheeling = false;
+
+        // Store unit count and angle
+        int amountUnits = units.Count;
+        float anglePerUnit = (Mathf.PI * 2f) / amountUnits;
+        float radius = amountUnits * (unitWidth / 5f);
+
+        // Loop to create formation
+        for (int index = 0; index < amountUnits; index++)
+        {
+            Vector3 position = new Vector3(Mathf.Cos(anglePerUnit * index), 0f, Mathf.Sin(anglePerUnit * index)) * radius;
+
+            // If we have transform already, set new position
+            if (m_FormationTransforms.Count > index)
+            {
+                m_FormationTransforms[index].localPosition = position;
+            }
+            else
+            {
+                // Instantiate a point parented to the leader, with a relative position
+                GameObject go = Instantiate(m_FormationPointPrefab, transform);
+                go.transform.localPosition = position;
+                m_FormationTransforms.Add(go.transform);
             }
         }
     }
