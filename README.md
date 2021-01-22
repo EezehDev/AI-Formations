@@ -211,3 +211,5 @@ Being flexible with the pathfinding algorithm is a good idea when it comes to pe
 [Introduction to A* - Amit Patel](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html)
 
 [Performance Evaluation of Pathfinding Algorithms - Harinder Kaur Sidhu](https://scholar.uwindsor.ca/cgi/viewcontent.cgi?article=9230&context=etd)
+
+[Divide and Conquer - FreeCodeCamp](https://www.freecodecamp.org/news/divide-and-conquer-algorithms/)
