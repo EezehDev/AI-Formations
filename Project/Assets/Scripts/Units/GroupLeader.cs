@@ -119,10 +119,25 @@ public class GroupLeader : MonoBehaviour
     // FORMATION METHODS
     // -------------------------
 
+    public void NextFormation()
+    {
+        // Cycle formation
+        switch (m_CurrentFormation)
+        {
+            case FormationType.line:
+                Debug.Log("switching from line formation");
+                break;
+        }
+
+        // Create the new formation
+        CreateFormation();
+    }
+
     public void CreateFormation()
     {
         RemoveExcessTransformations(); // remove points
 
+        // Create the current active formation
         switch (m_CurrentFormation)
         {
             case FormationType.line:
@@ -172,6 +187,11 @@ public class GroupLeader : MonoBehaviour
         m_AngularSpeed = m_MaxAngularSpeed / units.Count;
         m_AngularSpeed = Mathf.Clamp(m_AngularSpeed, m_MinAngularSpeed, m_MaxAngularSpeed);
     }
+
+
+    // -------------------------
+    // DIFFERENT FORMATIONS
+    // -------------------------
 
     // Creates a line formation, using the leader as center
     private void CreateLineFormation()

@@ -35,6 +35,14 @@ public class PlayerController : MonoBehaviour
             GameObject go = Instantiate(m_MoveParticle, worldLocation, Quaternion.identity);
             Destroy(go, 1f);
         }
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            foreach (GroupLeader leader in m_Data.selectedLeaders)
+            {
+                leader.NextFormation();
+            }
+        }
     }
 
 
