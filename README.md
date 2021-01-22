@@ -174,9 +174,9 @@ We should limit the angular speed or speed at which the leader can rotate based 
 
 When only using A* and moving the units individually towards a target, they will often split up around obstacles to avoid bumping into eachother. This causes the group to shatter in all directions to reach their goal as soon as possible. When dealing with a group, it often looks better to make them all follow the same path around obstacles. To achieve this units will all need to move towards the same choke point, without blocking eachother. This means units will have to wait for eachother before going to the goal themselves.
 
-You can take this step even further, by also making units wait and slow down in order to make the full group arrive at roughly the same time.
-
 ![similar path](https://github.com/MrEezeh/AI-Formations/blob/main/Images/choke-point.jpg)
+
+You can take this step even further, by also making units wait and slow down in order to make the full group arrive at roughly the same time.
 
 **Allowing units to pass**
 
