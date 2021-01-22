@@ -8,6 +8,7 @@ public class GroupLeader : MonoBehaviour
     // Group info
     public int groupID = -1;
     public List<UnitBehavior> units = new List<UnitBehavior>();
+    const float unitWidth = 0.5f;
 
     // Formations
     [SerializeField] private GameObject m_FormationPointPrefab = null;
@@ -80,9 +81,57 @@ public class GroupLeader : MonoBehaviour
 
     public void CreateFormation()
     {
-        // Initialise values
+        RemoveExcessTransformations(); // remove points
+        CreateLineFormation(); // create line formation
+
+        UpdateGroupSpeed(); // update group speed
+    }
+
+    // Removes unecessary transformation points
+    private void RemoveExcessTransformations()
+    {
+        // If we have more transforms than needed, remove last ones
+        if (m_FormationTransforms.Count > units.Count)
+        {
+            for (int index = m_FormationTransforms.Count; index < units.Count; index++)
+            {
+                Destroy(m_FormationTransforms[index].gameObject);
+                m_FormationTransforms.RemoveAt(index);
+            }
+        }
+    }
+
+    // Updates the unit speed, and sets angular/linear group speed
+    private void UpdateGroupSpeed()
+    {
+        float slowestSpeed = Mathf.Infinity;
+        foreach (UnitBehavior unit in units)
+        {
+            // Save the lowest speed
+            float unitSpeed = unit.GetNormalSpeed();
+            if (unitSpeed < slowestSpeed)
+            {
+                slowestSpeed = unitSpeed;
+            }
+        }
+
+        // Apply speed to group, set all units to match this speed increased with amplifier
+        m_MaxSpeed = slowestSpeed;
+        foreach (UnitBehavior unit in units)
+        {
+            unit.SetMinimumSpeed(slowestSpeed * m_SpeedAmplifier);
+        }
+
+        // Set angular speed
+        m_AngularSpeed = m_MaxAngularSpeed / units.Count;
+        m_AngularSpeed = Mathf.Clamp(m_AngularSpeed, m_MinAngularSpeed, m_MaxAngularSpeed);
+    }
+
+    // Creates a line formation
+    private void CreateLineFormation()
+    {
+        // Store unit count
         int amountUnits = units.Count;
-        float unitWidth = 0.5f;
 
         // Multiple rows
         int minimumRowSize = 5;
@@ -100,29 +149,28 @@ public class GroupLeader : MonoBehaviour
         int unitsPerRow = ((amountUnits - 1) / rows) + 1;
 
         // Set start position
-        float startX = -unitWidth * (unitsPerRow / 2f) + (unitWidth / 2f);
-        float startZ = -unitWidth * (rows / 2f) + (unitWidth / 2f);
+        Vector2 bottomLeft = new Vector2(-unitWidth * (unitsPerRow / 2f) + (unitWidth / 2f), unitWidth * (rows / 2f) - (unitWidth / 2f));
 
         Vector3 currentPosition = Vector3.zero;
-        currentPosition.x = startX;
-        currentPosition.z = startZ;
+        currentPosition.x = bottomLeft.x;
+        currentPosition.z = bottomLeft.y;
 
-        // If we have more transforms than needed, remove last ones
-        if (m_FormationTransforms.Count > amountUnits)
-        {
-            for (int index = m_FormationTransforms.Count; index < amountUnits; index++)
-            {
-                Destroy(m_FormationTransforms[index].gameObject);
-                m_FormationTransforms.RemoveAt(index);
-            }
-        }
-
-        // Speed values
-        float slowestSpeed = Mathf.Infinity;
-
-        // Loop for each unit
+        // Loop to create formation
+        int currentRow = 1;
         for (int index = 0; index < amountUnits; index++)
         {
+            // Check if last row has a different size than other rows
+            if ((rows > 1) && (currentRow == rows) && (index % unitsPerRow == 0))
+            {
+                int unitsLastRow = amountUnits - (unitsPerRow * (rows - 1));
+
+                int unitDifference = unitsPerRow - unitsLastRow;
+                if (unitDifference > 0)
+                {
+                    currentPosition.x += unitWidth * (unitDifference / 2f);
+                }
+            }
+
             // If we have transform already, set new position
             if (m_FormationTransforms.Count > index)
             {
@@ -136,18 +184,12 @@ public class GroupLeader : MonoBehaviour
                 m_FormationTransforms.Add(go.transform);
             }
 
-            // Save the lowest speed
-            float unitSpeed = units[index].GetNormalSpeed();
-            if (unitSpeed < slowestSpeed)
-            {
-                slowestSpeed = unitSpeed;
-            }
-
             if (((index + 1) % unitsPerRow) == 0)
             {
                 // Update Z position and reset X
-                currentPosition.z += unitWidth;
-                currentPosition.x = startX;
+                currentPosition.z -= unitWidth;
+                currentPosition.x = bottomLeft.x;
+                currentRow++;
             }
             else
             {
@@ -155,17 +197,6 @@ public class GroupLeader : MonoBehaviour
                 currentPosition.x += unitWidth;
             }
         }
-
-        // Apply speed to group, set all units to match this speed increased with amplifier
-        m_MaxSpeed = slowestSpeed;
-        foreach (UnitBehavior unit in units)
-        {
-            unit.SetMinimumSpeed(slowestSpeed * m_SpeedAmplifier);
-        }
-
-        // Set angular speed
-        m_AngularSpeed = m_MaxAngularSpeed / amountUnits;
-        m_AngularSpeed = Mathf.Clamp(m_AngularSpeed, m_MinAngularSpeed, m_MaxAngularSpeed);
     }
 
     // Set a new target
