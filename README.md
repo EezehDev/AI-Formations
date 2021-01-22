@@ -176,6 +176,8 @@ When only using A* and moving the units individually towards a target, they will
 
 You can take this step even further, by also making units wait and slow down in order to make the full group arrive at roughly the same time.
 
+![similar path](https://github.com/MrEezeh/AI-Formations/blob/main/Images/choke-point.jpg)
+
 **Allowing units to pass**
 
 One of the most important and difficult tasks for a group, is to make room for group units to take their position. When for example the most important unit has to move to the middle of the group, you would want the units in it's path to move to the side as he gets closer and shortly after his arrival close back up. For this you need to keep the unit speeds and sizes into account, while all units need to be able to communicate and tell eachother when they need to move to avoid collisions.
