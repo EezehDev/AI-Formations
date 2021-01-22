@@ -10,7 +10,7 @@ Coordinated Group Movement are often used in RTS games, to move a group of units
 
 To embrace the RTS style, I will also try to simulate some of the input and controls available in these games. A few of these controls being: rectangular (multi-) selection, movement commands, grouping/ungrouping units. This is not part of the actual research, but feels like a perfect fit.
 
-## Project Info
+## Project info
 
 **Installation Guide**
 1. Download [Unity](https://unity.com/)
@@ -34,7 +34,7 @@ To embrace the RTS style, I will also try to simulate some of the input and cont
 
 Unreal engine would be the best choice, since it has great physics and a well structured engine architecture. However coding C++ in Unreal Engine can be quite tricky and isn't easy to pick up. For this reason Unity is a great alternative with a decent physic simulation and much more beginner friendly, and what I personally used.
 
-**RTS Selection**
+**RTS selection**
 
 RTS style selection is implemented using a 3D plane that scales when dragging the mouse cursor around, upon releasing the left mouse button all units within the box collision attached will be selected and can be controlled by the player.
 
@@ -123,7 +123,7 @@ After assigning the positions, we move all the units to their corresponding tran
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/line-formation.gif" alt="line-formation example" width="500" />
 
-**Formation Movement**
+**Formation movement**
 
 To move a formation, we can again use A* pathfinding to move our virtual leader. It is important to move all transformation points relative to the leader, and changing the orientation to match the movement direction in order to keep it looking natural. We will update our pathfinding every frame to ensure a correct path towards the target while also moving all units back to their point.
 
@@ -158,7 +158,7 @@ For now we are using only one semi-hardcoded formation, and it would be a better
 
 **Group Cohesion**
 
-**1. Unit Speed**
+**1. Unit speed**
 
 It's a good idea to get the lowest unit speed and use this as a reference for our group speed. Our leader should move at the speed of the slowest unit so our formation never moves faster than the slowest unit alone, if we then set the speed of all units in our group to at least match this speed with a small multiplication our units will be able to catch up to the group. Careful not to set this speed multiplier too high, as it will start feeling unnatural to the player. 
 
@@ -168,6 +168,24 @@ We should limit the angular speed or speed at which the leader can rotate based 
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/group-cohesion.gif" alt="group-cohesion example" width="500" />
 
+## How to improve (not implemented)
+
+**Similar path**
+
+When only using A* and moving the units individually towards a target, they will often split up around obstacles to avoid bumping into eachother. This causes the group to shatter in all directions to reach their goal as soon as possible. When dealing with a group, it often looks better to make them all follow the same path around obstacles. To achieve this units will all need to move towards the same choke point, without blocking eachother. This means units will have to wait for eachother before going to the goal themselves.
+
+You can take this step even further, by also making units wait and slow down in order to make the full group arrive at roughly the same time.
+
+**Allowing units to pass**
+
+One of the most important and difficult tasks for a group, is to make room for group units to take their position. When for example the most important unit has to move to the middle of the group, you would want the units in it's path to move to the side as he gets closer and shortly after his arrival close back up. For this you need to keep the unit speeds and sizes into account, while all units need to be able to communicate and tell eachother when they need to move to avoid collisions.
+
+**Advanced pathing**
+
+As a last improvement, you can choose to upgrade how your formation deals with pathing in general. This can be things like splitting up the formation at certain points without losing strength, and regrouping them correctly after. By doing this, you allow the group to arrive faster than moving them all towards the same choke point.
+
+Being flexible with the pathfinding algorithm is a good idea when it comes to performance, usually you want to split up your pathfinding into two different methods. One used for long distances to decrease computing time, and one for handling pathing around smaller objects and spaces with more accurate results. Often this is referred as divide-and-conquer, as we split up the issue into smaller parts. [read more on pathfinding](https://github.com/MrEezeh/AI-Formations/#sources)
+
 ## Result
 
 ## Sources
@@ -176,7 +194,7 @@ We should limit the angular speed or speed at which the leader can rotate based 
 
 [Basic Motions FREE Pack - Kevin Iglesias](https://assetstore.unity.com/packages/3d/animations/basic-motions-free-pack-154271)
 
-**Similar Work**
+**Similar work**
 
 [Implementing Coordinated Movement - Dave Pottinger](https://www.gamasutra.com/view/feature/3314/coordinated_unit_movement.php?print=1)
 
@@ -186,6 +204,8 @@ We should limit the angular speed or speed at which the leader can rotate based 
 
 [RTS Group Movement - Sandra Alvarez](https://sandruski.github.io/RTS-Group-Movement/)
 
-**Useful Links**
+**Useful links**
 
 [Introduction to A* - Amit Patel](http://theory.stanford.edu/~amitp/GameProgramming/AStarComparison.html)
+
+[Performance Evaluation of Pathfinding Algorithms - Harinder Kaur Sidhu](https://scholar.uwindsor.ca/cgi/viewcontent.cgi?article=9230&context=etd)
