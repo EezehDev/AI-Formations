@@ -16,6 +16,11 @@ public class PlayerSelect : MonoBehaviour
     [SerializeField] private GameObject m_GroupLeaderPrefab = null;
     const int m_GroupLimit = 24;
 
+
+    // -------------------------
+    // START & UPDATE
+    // -------------------------
+
     private void Start()
     {
         m_Data = GetComponent<PlayerData>();
@@ -55,6 +60,11 @@ public class PlayerSelect : MonoBehaviour
             }
         }
     }
+
+
+    // -------------------------
+    // BOX SELECTION
+    // -------------------------
 
     // Handle mouse click and drag select
     private void ClickDragSelect()
@@ -123,6 +133,11 @@ public class PlayerSelect : MonoBehaviour
         m_Selecting = false;
         m_Adding = false;
     }
+
+
+    // -------------------------
+    // SELECTING UNITS
+    // -------------------------
 
     // Select units inside selection box
     private void SelectUnits()

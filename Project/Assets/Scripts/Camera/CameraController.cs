@@ -17,6 +17,11 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float m_MinDistance = 5f; // Minimum camera distance
     [SerializeField] private float m_MaxDistance = 15f; // Maximum camera distance
 
+
+    // -------------------------
+    // START & UPDATE
+    // -------------------------
+
     // Initialise the camera position
     public void Start()
     {
@@ -32,6 +37,11 @@ public class CameraController : MonoBehaviour
         // After handling movement and scrolling update the location
         m_Camera.position = m_CurrentLocation;
     }
+
+
+    // -------------------------
+    // MOVEMENT
+    // -------------------------
 
     // Input handling for horizontal and vertical axis, moving the camera around
     private void HandleMovement()

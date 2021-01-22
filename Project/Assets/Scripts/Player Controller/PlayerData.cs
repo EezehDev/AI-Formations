@@ -12,6 +12,11 @@ public class PlayerData : MonoBehaviour
     public bool[] groups = new bool[maxGroups];
     public Material[] groupMaterials = new Material[maxGroups];
 
+
+    // -------------------------
+    // GETTERS & SETTERS
+    // -------------------------
+
     public int GetMaxGroupCount()
     {
         return maxGroups;

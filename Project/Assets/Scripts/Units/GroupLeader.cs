@@ -13,6 +13,13 @@ public class GroupLeader : MonoBehaviour
     // Formations
     [SerializeField] private GameObject m_FormationPointPrefab = null;
     private List<Transform> m_FormationTransforms = new List<Transform>();
+    private FormationType m_CurrentFormation = FormationType.line;
+
+    // All formation types
+    private enum FormationType
+    {
+        line
+    };
 
     // Navigation
     [SerializeField] private float m_SpeedAmplifier = 1.3f;
@@ -27,6 +34,12 @@ public class GroupLeader : MonoBehaviour
     private float m_Speed = 0f;
     private float m_AngularSpeed = 0f;
 
+
+    // -------------------------
+    // INIT AND UPDATE
+    // -------------------------
+
+    // Initialise path and target
     private void Start()
     {
         // Initialize navigation data
@@ -36,6 +49,7 @@ public class GroupLeader : MonoBehaviour
         m_Rigidbody = GetComponent<Rigidbody>();
     }
 
+    // Update group path and move units
     private void FixedUpdate()
     {
         // If we are further away than stop distance
@@ -73,16 +87,48 @@ public class GroupLeader : MonoBehaviour
         MoveUnits();
     }
 
+
+    // -------------------------
+    // LEADER AND GROUP COMMANDS
+    // -------------------------
+
+    // Sets a new leader location
     public void SetLocation(Vector3 location)
     {
         transform.position = location;
         m_Target = location;
     }
 
+    // Set a new target
+    public void SetTarget(Vector3 target)
+    {
+        m_Target = target;
+    }
+
+    // Move units towards formation position
+    private void MoveUnits()
+    {
+        for (int index = 0; index < units.Count; index++)
+        {
+            units[index].SetTarget(m_FormationTransforms[index].position);
+        }
+    }
+
+
+    // -------------------------
+    // FORMATION METHODS
+    // -------------------------
+
     public void CreateFormation()
     {
         RemoveExcessTransformations(); // remove points
-        CreateLineFormation(); // create line formation
+
+        switch (m_CurrentFormation)
+        {
+            case FormationType.line:
+                CreateLineFormation(); // create line formation
+                break;
+        }
 
         UpdateGroupSpeed(); // update group speed
     }
@@ -127,7 +173,7 @@ public class GroupLeader : MonoBehaviour
         m_AngularSpeed = Mathf.Clamp(m_AngularSpeed, m_MinAngularSpeed, m_MaxAngularSpeed);
     }
 
-    // Creates a line formation
+    // Creates a line formation, using the leader as center
     private void CreateLineFormation()
     {
         // Store unit count
@@ -196,21 +242,6 @@ public class GroupLeader : MonoBehaviour
                 // Update X position
                 currentPosition.x += unitWidth;
             }
-        }
-    }
-
-    // Set a new target
-    public void SetTarget(Vector3 target)
-    {
-        m_Target = target;
-    }
-
-    // Move units towards formation position
-    private void MoveUnits()
-    {
-        for (int index = 0; index < units.Count; index++)
-        {
-            units[index].SetTarget(m_FormationTransforms[index].position);
         }
     }
 }

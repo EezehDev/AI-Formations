@@ -9,6 +9,10 @@ public class PlayerController : MonoBehaviour
     // Particle
     [SerializeField] private GameObject m_MoveParticle = null;
 
+    // -------------------------
+    // START & UPDATE
+    // -------------------------
+
     private void Start()
     {
         m_Data = GetComponent<PlayerData>();
@@ -32,6 +36,11 @@ public class PlayerController : MonoBehaviour
             Destroy(go, 1f);
         }
     }
+
+
+    // -------------------------
+    // COMMAND MOVE
+    // -------------------------
 
     // Move all selected units to target
     private void MoveSelection(Vector3 target)

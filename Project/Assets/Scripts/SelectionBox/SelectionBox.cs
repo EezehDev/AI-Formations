@@ -7,6 +7,11 @@ public class SelectionBox : MonoBehaviour
     private Vector3 m_EndLocation;
     public List<GameObject> m_OverlappingObjects = new List<GameObject>();
 
+
+    // -------------------------
+    // TRIGGERS
+    // -------------------------
+
     // Add object to list on enter
     private void OnTriggerEnter(Collider other)
     {
@@ -18,6 +23,11 @@ public class SelectionBox : MonoBehaviour
     {
         m_OverlappingObjects.Remove(other.gameObject);
     }
+
+
+    // -------------------------
+    // GETTERS & SETTERS
+    // -------------------------
 
     // Return current list of overlapping objects
     public List<GameObject> GetOverlappingObjects()

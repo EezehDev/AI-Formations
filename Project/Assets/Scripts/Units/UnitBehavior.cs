@@ -23,6 +23,11 @@ public class UnitBehavior : MonoBehaviour
     // Group
     private GroupLeader m_Leader = null;
 
+
+    // -------------------------
+    // START & UPDATE
+    // -------------------------
+
     private void Start()
     {
         // Change material instance
@@ -35,6 +40,17 @@ public class UnitBehavior : MonoBehaviour
         m_NavMeshAgent = GetComponent<NavMeshAgent>();
         m_NormalSpeed = m_NavMeshAgent.speed;
     }
+
+    private void FixedUpdate()
+    {
+        // Set the animator velocity
+        m_Animator.SetFloat("Velocity", m_NavMeshAgent.velocity.magnitude);
+    }
+
+
+    // -------------------------
+    // SELECTING
+    // -------------------------
 
     // Code to execute when selecting unit
     public void Select()
@@ -50,11 +66,10 @@ public class UnitBehavior : MonoBehaviour
         m_SelectionCircle.SetActive(false);
     }
 
-    private void FixedUpdate()
-    {
-        // Set the animator velocity
-        m_Animator.SetFloat("Velocity", m_NavMeshAgent.velocity.magnitude);
-    }
+
+    // -------------------------
+    // GETTERS & SETTERS
+    // -------------------------
 
     // Set a new target
     public void SetTarget(Vector3 target)
