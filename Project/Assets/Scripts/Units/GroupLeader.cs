@@ -6,11 +6,13 @@ using UnityEngine.AI;
 public class GroupLeader : MonoBehaviour
 {
     // Group info
+    [Header("Group Info")]
     public int groupID = -1;
     public List<UnitBehavior> units = new List<UnitBehavior>();
     const float unitWidth = 0.5f;
 
     // Formations
+    [Header("Formation")]
     [SerializeField] private GameObject m_FormationPointPrefab = null;
     private List<Transform> m_FormationTransforms = new List<Transform>();
     private FormationType m_CurrentFormation = FormationType.line;
@@ -22,6 +24,7 @@ public class GroupLeader : MonoBehaviour
     };
 
     // Navigation
+    [Header("Navigation")]
     [SerializeField] private float m_SpeedAmplifier = 1.3f;
     [SerializeField] private float m_StopDistance = 0.2f;
     [SerializeField] private float m_MaxAngularSpeed = 60f;

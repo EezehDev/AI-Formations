@@ -230,12 +230,18 @@ public class PlayerSelect : MonoBehaviour
     // Group selected units
     private void GroupSelection()
     {
-        // Only execute when we have at least 2 groups or units selected
-        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count < 2)
-            return;
-        if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count < 2)
+        // Only execute when we have a selection
+        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count == 0)
             return;
 
+        // Only execute when we have at least 2 groups or units selected
+        if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count < 2)
+        {
+            HUDManager.Instance.SetErrorMessage("Selected units already grouped.");
+            return;
+        }
+        if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count < 2)
+            return;
 
         // Check if we exceed maximum group size
         int amountUnits = 0;
@@ -250,7 +256,10 @@ public class PlayerSelect : MonoBehaviour
 
         // Only execute if we are within group size limit
         if (amountUnits > m_GroupLimit)
+        {
+            HUDManager.Instance.SetErrorMessage("Too many units selected.");
             return;
+        }
 
         bool newLeader = false;
         if (m_Data.selectedLeaders.Count == 0 || m_Data.selectedLeaders.Count >= 2)
@@ -280,7 +289,10 @@ public class PlayerSelect : MonoBehaviour
 
         // Do not execute if we don't have a free index
         if (freeIndex == -1)
+        {
+            HUDManager.Instance.SetErrorMessage("Group limit reached.");
             return;
+        }
 
         // Set minimum and maximum to opposite values
         Vector3 minimum = new Vector3(Mathf.Infinity, Mathf.Infinity, Mathf.Infinity);
