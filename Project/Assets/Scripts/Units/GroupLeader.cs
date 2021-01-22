@@ -17,6 +17,7 @@ public class GroupLeader : MonoBehaviour
     [SerializeField] private float m_SpeedAmplifier = 1.3f;
     [SerializeField] private float m_StopDistance = 0.2f;
     [SerializeField] private float m_MaxAngularSpeed = 60f;
+    [SerializeField] private float m_MinAngularSpeed = 15f;
     private Rigidbody m_Rigidbody;
     private NavMeshPath m_Path;
     private Vector3 m_Target;
@@ -83,9 +84,28 @@ public class GroupLeader : MonoBehaviour
         int amountUnits = units.Count;
         float unitWidth = 0.5f;
 
+        // Multiple rows
+        int minimumRowSize = 5;
+        int maximumRows = 3;
+
+        // Calculate rows
+        int rows = 1;
+        if (amountUnits > minimumRowSize)
+            rows = ((amountUnits - 1) / minimumRowSize) + 1;
+
+        if (rows > maximumRows)
+            rows = maximumRows;
+
+        // Define units per row
+        int unitsPerRow = ((amountUnits - 1) / rows) + 1;
+
         // Set start position
+        float startX = -unitWidth * (unitsPerRow / 2f) + (unitWidth / 2f);
+        float startZ = -unitWidth * (rows / 2f) + (unitWidth / 2f);
+
         Vector3 currentPosition = Vector3.zero;
-        currentPosition.x = -unitWidth * (amountUnits / 2f) + (unitWidth / 2f);
+        currentPosition.x = startX;
+        currentPosition.z = startZ;
 
         // If we have more transforms than needed, remove last ones
         if (m_FormationTransforms.Count > amountUnits)
@@ -123,8 +143,17 @@ public class GroupLeader : MonoBehaviour
                 slowestSpeed = unitSpeed;
             }
 
-            // Update current position
-            currentPosition.x += unitWidth;
+            if (((index + 1) % unitsPerRow) == 0)
+            {
+                // Update Z position and reset X
+                currentPosition.z += unitWidth;
+                currentPosition.x = startX;
+            }
+            else
+            {
+                // Update X position
+                currentPosition.x += unitWidth;
+            }
         }
 
         // Apply speed to group, set all units to match this speed increased with amplifier
@@ -136,6 +165,7 @@ public class GroupLeader : MonoBehaviour
 
         // Set angular speed
         m_AngularSpeed = m_MaxAngularSpeed / amountUnits;
+        m_AngularSpeed = Mathf.Clamp(m_AngularSpeed, m_MinAngularSpeed, m_MaxAngularSpeed);
     }
 
     // Set a new target

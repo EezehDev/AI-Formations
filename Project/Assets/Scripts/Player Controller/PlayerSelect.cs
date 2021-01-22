@@ -14,6 +14,7 @@ public class PlayerSelect : MonoBehaviour
 
     // Grouping
     [SerializeField] private GameObject m_GroupLeaderPrefab = null;
+    const int m_GroupLimit = 24;
 
     private void Start()
     {
@@ -218,6 +219,22 @@ public class PlayerSelect : MonoBehaviour
         if (m_Data.selectedUnits.Count == 0 && m_Data.selectedLeaders.Count < 2)
             return;
         if (m_Data.selectedLeaders.Count == 0 && m_Data.selectedUnits.Count < 2)
+            return;
+
+
+        // Check if we exceed maximum group size
+        int amountUnits = 0;
+        foreach (GroupLeader dataLeader in m_Data.selectedLeaders)
+        {
+            foreach (UnitBehavior dataLeaderUnit in dataLeader.units)
+            {
+                amountUnits++;
+            }
+        }
+        amountUnits += m_Data.selectedUnits.Count;
+
+        // Only execute if we are within group size limit
+        if (amountUnits > m_GroupLimit)
             return;
 
         bool newLeader = false;
