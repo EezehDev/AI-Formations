@@ -58,11 +58,11 @@ When it comes to selecting a leader, you have a few options:
 
 **1. Random unit**
 
-Choosing a random unit is a simple solution but comes with some disadvantages. Upon creating a group, one unit will take on the role as leader and hold all the necessary data. All units will follow his movement, this is the main issue. A random unit will never be the same when creating a group, and since all group members follow the leader the movement will never be the same between two similar groups. You can change the position of the leader within the group, but that doesn't quite solve the issue since your leader can not break the formation, often making groups where the leader can not be in the center behave different from the rest.
+Upon creating a group, one unit will take on the role as leader and hold all the necessary data. All units will follow his movement, which brings up some issues. A random unit will never be the same when creating a group, making each group move different. Changing the position of our leader within the formation, will only solve this problem in some cases.
 
 **2. Virtual unit**
 
-To fix the above issues, we can create a new unit that doesn't have a visual representation. This unit can be placed anywhere in the formation without the player noticing and gives us more control over the group. Most of the time you will want this unit to be in the center, making formations behave as you would expect. In some cases games will make the leader stronger, so to fix this you would still have to assign a random unit the leader role while keeping all the data stored in this virtual unit.
+To fix the above issues, we can create a new unit that doesn't have a visual representation. This unit can be placed anywhere in the formation without the player noticing and gives us more control over the group. Most of the time you will want this unit to be in the center, making formations behave as you would expect.
 
 **3. Most important unit**
 
