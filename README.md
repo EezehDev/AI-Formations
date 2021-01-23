@@ -168,7 +168,7 @@ We should limit the angular speed or speed at which the leader can rotate based 
 
 <img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/group-cohesion.gif" alt="group-cohesion example" width="500" />
 
-## How to improve (not implemented)
+## How to improve (not implemented yet)
 
 **Similar path**
 
@@ -195,6 +195,12 @@ As a last improvement, you can choose to upgrade how your formation deals with p
 Being flexible with the pathfinding algorithm is a good idea when it comes to performance, usually you want to split up your pathfinding into two different methods. One used for long distances to decrease computing time, and one for handling pathing around smaller objects and spaces with more accurate results. Often this is referred as divide-and-conquer, as we split up the issue into smaller parts.
 
 ## Result
+
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/result.gif" alt="research result" width="500" />
+
+**Conclusion**
+
+Happy with how it turned out, there is a lot to still improve on but it is starting to somewhat look like a coordinated group. When I first started this research, I thought it would be simple to get a group to move into a formation and just pathfind towards their goal. While it works fine for a small group, dealing with all the collisions and tasks of different units within a bigger group is a real challenge that requires multiple systems working together. Every unit needs to be aware of the rest of the group at all times and react to different situations to make it feel like they are really working together. While it is impossible to fix all the pathfinding and collision problems, I will definitely look back at this project later and improve on it.
 
 ## Sources
 
