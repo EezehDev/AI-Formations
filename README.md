@@ -182,7 +182,13 @@ You can take this step even further, by also making units wait and slow down in 
 
 One of the most important and difficult tasks for a group, is to make room for group units to take their position. When for example the most important unit has to move to the middle of the group, you would want the units in it's path to move to the side as he gets closer and shortly after his arrival close back up. For this you need to keep the unit speeds and sizes into account, while all units need to be able to communicate and tell eachother when they need to move to avoid collisions.
 
-**Advanced pathing**
+**Advanced Formations**
+
+There are plenty more formations possible, such as creating a square of circle. When dealing with different unit sizes within a group, you can build your formation around important units by assigning units to a certain flank, core and more. Each formation can behave different from another by changing a few simple parameters, as an example a circle does not need to rotate when moving. Units within a formation can also be told to use a certain rotation when dealing with line of sight for example, in this case you would simply need to rotate every unit to the relative rotation after reaching their destination.
+
+<img src="https://i.redd.it/usimphnd7fc41.png" alt="starcraft-formation example" width="500" />
+
+**Improved pathing**
 
 As a last improvement, you can choose to upgrade how your formation deals with pathing in general. This can be things like splitting up the formation at certain points without losing strength, and regrouping them correctly after. By doing this, you allow the group to arrive faster than moving them all towards the same choke point.
 
