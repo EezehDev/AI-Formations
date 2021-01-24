@@ -196,7 +196,7 @@ Being flexible with the pathfinding algorithm is a good idea when it comes to pe
 
 ## Result
 
-<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/result.gif" alt="research result" width="500" />
+<img src="https://github.com/MrEezeh/AI-Formations/blob/main/Gifs/result.gif" alt="research result" />
 
 **Conclusion**
 
